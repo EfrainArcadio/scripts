@@ -1,0 +1,4 @@
+config/db.json
+public/recargas
+public/validaciones
+.env

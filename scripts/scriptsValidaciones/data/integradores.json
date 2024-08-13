@@ -1,0 +1,45 @@
+{
+  "MICROSAFE": 
+  [
+    {"1":"MIIT"},
+    {"2":"SAUSA"},
+    {"3":"ATROLSA"},
+    {"4":"CEUSA"},
+    {"9":"COPATTSA"},
+    {"D":"AMOPSA"},
+    {"E":"CETRAM ZAPATA"}
+
+  ],
+  "CONDUENT": 
+  [
+    {"7":"AULSA"},
+    {"11":"CODIVERSA"},
+    {"13":"TVO"},
+    {"34":"CETRAM BUENAVISTA"},
+    {"36":"CETRAM TACUBAYA"}
+  ],
+  "JM": 
+  [
+    {"15":"ABC"},
+    {"16":"MOVIN"}
+  ],
+  "BEA": 
+  [
+    {"5":"TRIOXA"}
+  ],
+  "MPESO": 
+  [
+    {"6":"ACASA"}
+  ],
+  "INSITRA": 
+  [
+    {"12":"COPESA"}
+  ],
+  "SCSOFT":
+  [
+    {"17":"COAVEO"},
+    {"14":"COTAXOMIL"}
+  ]
+
+}
+

@@ -2,9 +2,9 @@ import pandas as pd
 import os
 import json
 import psycopg2
-y= "2024"
-mes = "enero"
-m = "01"
+y= "2022"
+mes = "Marzo"
+m = "03"
 dia_in = 1
 dia_fn = 32
 ##
@@ -70,6 +70,7 @@ def uploadExt(df, table_name, connection):
 ##
 def uploadTra(df, table_name, connection):
     try:
+        
         columns = list(df.columns)
         unique_col = columns[0]
         lowercase_columns = [name.lower() for name in columns]
@@ -89,7 +90,7 @@ def uploadTra(df, table_name, connection):
 ##
 df_ext = pd.concat(extenciones)  
 df_tra = pd.concat(transacciones)
-df_tra = df_tra[['ID_TRANSACCION_ORGANISMO','PROVIDER','TIPO_TARJETA','NUMERO_SERIE_HEX','FECHA_HORA_TRANSACCION','TIPO_EQUIPO','LOCATION_ID','TIPO_TRANSACCION','SALDO_ANTES_TRANSACCION','MONTO_TRANSACCION','SALDO_DESPUES_TRANSACCION','SAM_SERIAL_HEX_ULTIMA_RECARGA','SAM_SERIAL_HEX','CONTADOR_RECARGAS','EVENT_LOG','LOAD_LOG','MAC','SAM_COUNTER','ENVIRONMENT','ENVIRONMET_ISSUER_ID','CONTRACT','CONTRACT_TARIFF','CONTRACT_SALE_SAM','CONTRACT_RESTRICT_TIME','CONTRACT_VALIDITY_START_DATE','CONTRACT_VALIDITY_DURATION']]
+df_tra = df_tra[['ID_TRANSACCION_ORGANISMO','PROVIDER','TIPO_TARJETA','NUMERO_SERIE_HEX','FECHA_HORA_TRANSACCION','TIPO_EQUIPO','LOCATION_ID','TIPO_TRANSACCION','SALDO_ANTES_TRANSACCION','MONTO_TRANSACCION','SALDO_DESPUES_TRANSACCION','SAM_SERIAL_HEX_ULTIMA_RECARGA','SAM_SERIAL_HEX','CONTADOR_RECARGAS','EVENT_LOG','LOAD_LOG','MAC','SAM_COUNTER','ENVIRONMENT','ENVIRONMET_ISSUER_ID','CONTRACT','CONTRACT_TARIFF','CONTRACT_SALE_SAME','CONTRACT_RESTRICT_TIME','CONTRACT_VALIDITY_START_DATE','CONTRACT_VALIDITY_DURATION']]
 
 if connection:
   print("Conexión exitosa")

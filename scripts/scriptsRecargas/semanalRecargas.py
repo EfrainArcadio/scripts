@@ -8,16 +8,16 @@ import numpy as np
 #                           Parametros de Analisis                            #
 ###############################################################################
 ## Primer fecha compuesta de la consulta 
-yi = '2024'
-mi = '07'
-di = '29'
+yi = '2022'
+mi = '01'
+di = '01'
 ## Segunda fecha compuesta de la consulta
-yf = '2024'
-mf = '08'
-df = '04'
+yf = '2022'
+mf = '01'
+df = '31'
 ## Datos Extra
-mes = 'Agosto'
-sem = '31'
+mes = 'Enero'
+sem = '1'
 ##
 app = '101801'
 dig = '101800'
@@ -63,11 +63,11 @@ with open(json_conn, 'r') as f_conn:
 connection = psycopg2.connect(**data_conn)
 ## Consulta para extraer todos los datos del periodo de tiempo seleccionado
 cursor = connection.cursor()
-cursor.execute(f"SELECT * FROM datos_rre_2024 WHERE fecha_hora_transaccion >= '{yi}-{mi}-{di} 00:00:00' AND fecha_hora_transaccion <= '{yf}-{mf}-{df} 23:59:59'")
+cursor.execute(f"SELECT * FROM datos_rre_{yi} WHERE fecha_hora_transaccion >= '{yi}-{mi}-{di} 00:00:00' AND fecha_hora_transaccion <= '{yf}-{mf}-{df} 23:59:59'")
 transacciones = cursor.fetchall()
 ##
 cursor2 = connection.cursor()
-cursor2.execute(f"SELECT * FROM datos_ext_rre_2024 WHERE start_date >= '{yi}-{mi}-{di} 00:00:00' AND start_date <= '{yf}-{mf}-{df} 23:59:59'")
+cursor2.execute(f"SELECT * FROM datos_ext_rre_{yi} WHERE start_date >= '{yi}-{mi}-{di} 00:00:00' AND start_date <= '{yf}-{mf}-{df} 23:59:59'")
 extenciones = cursor2.fetchall()
 newExtenciones = []
 for fila in extenciones:

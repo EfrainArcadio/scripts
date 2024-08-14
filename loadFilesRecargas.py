@@ -3,10 +3,10 @@ import os
 import json
 import psycopg2
 y= "2022"
-mes = "Marzo"
-m = "03"
+mes = "Junio"
+m = "06"
 dia_in = 1
-dia_fn = 32
+dia_fn = 31
 ##
 tablaExtName = f"datos_ext_rre_{y}"
 tablaTraName = f"datos_rre_{y}"
@@ -35,9 +35,19 @@ archivo_ex = [os.path.join(pathInfo, f"{y}{m}{d:02d}{ae}") for d in range(dia_in
 
 transacciones = []
 ## Bucle para insertar todos los archivos en el DataFrame transacciones
-for transaccion in archivo_tr:
-  df = pd.read_csv(transaccion)
-  transacciones.append(df)
+def impute_dates(df,dia):
+  dia = dia + 1
+  if dia < 10:
+    dia = f'0{dia}'
+  static_date = f'{y}-{m}-{dia} 00:00:00'
+  default_date = f'2021-08-13 00:00:00'
+  df['FECHA_HORA_TRANSACCION'] = df['FECHA_HORA_TRANSACCION'].fillna(static_date)
+  df['CONTRACT_VALIDITY_START_DATE'] = df['CONTRACT_VALIDITY_START_DATE'].fillna(default_date)
+
+for dia,transaccion in enumerate(archivo_tr):
+    df = pd.read_csv(transaccion, low_memory=False)
+    impute_dates(df,dia)
+    transacciones.append(df)
 ## Concatenación de documentos extraídos del arreglo transacciones y creando un solo DataFrame con información de toda la quincena
 ## Arreglo que se llenara con los archivos -Transacciones.csv
 extenciones = []

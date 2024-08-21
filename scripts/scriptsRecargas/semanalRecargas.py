@@ -8,16 +8,16 @@ import numpy as np
 #                           Parametros de Analisis                            #
 ###############################################################################
 ## Primer fecha compuesta de la consulta 
-yi = '2022'
-mi = '01'
-di = '01'
+yi = '2024'
+mi = '08'
+di = '12'
 ## Segunda fecha compuesta de la consulta
-yf = '2022'
-mf = '01'
-df = '31'
+yf = '2024'
+mf = '08'
+df = '18'
 ## Datos Extra
-mes = 'Enero'
-sem = '1'
+mes = 'Agosto'
+sem = '33'
 ##
 app = '101801'
 dig = '101800'

@@ -2,11 +2,11 @@ import pandas as pd
 import os
 import json
 import psycopg2
-y= "2023"
-mes = "Diciembre"
-m = "12"
-dia_in = 1
-dia_fn = 32
+y= "2024"
+mes = "Agosto"
+m = "08"
+dia_in = 19
+dia_fn = 26
 ##
 tablaExtName = f"datos_ext_rre_{y}"
 tablaTraName = f"datos_rre_{y}"

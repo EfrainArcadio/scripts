@@ -5,10 +5,10 @@ import json
 from openpyxl import Workbook
 ## Primer fecha compuesta de la consulta 
 y= "2024"
-mes = "Junio"
-m = "06"
+mes = "Julio"
+m = "07"
 dia_in = "1"
-dia_fn = "30"
+dia_fn= "31"
 ###
 app = '101801'
 dig = '101800'
@@ -21,7 +21,13 @@ ruta_superior = os.path.dirname(ruta_actual)
 ruta_sup_2 = os.path.dirname(ruta_superior)
 ##
 ruta_dumps = os.path.join(ruta_sup_2,f'public/recargas/meses/{y}/{m} {mes}')
-
+def path_verify(path):
+  if not os.path.exists(path):
+    os.makedirs(path)
+    print(f'Directorio Creado: {path}')
+  else:
+    print(f'El Directorio ya existe: {path}')
+path_verify(ruta_dumps)
 ###
 json_conn = os.path.join(ruta_sup_2,f'config/db.json')
 with open(json_conn, 'r') as f_conn:
@@ -166,15 +172,15 @@ with pd.ExcelWriter(ruta_sams) as writer:
 print("Creando Archivo Penalizaciones...")
 ## Analisis para las penalizaciones de las transacciones mayores a 7 seg
 # df_extenciones['duration'] = df_extenciones['duration']
-mayor_seven = df_extenciones['duration'] > '7'
-## Se realiza el conteo total de todas las transacciones que son mayores a los 7 segundos
-ntr_may_seven = len(mayor_seven)
-print(ntr_may_seven)
+df_7 = df_extenciones[df_extenciones['duration'] > 7].copy()
+tr_may_7s = len(df_7)
+print('Transacciones > 7S',tr_may_7s)
+
 ## Convierte la serie a un tipo de datos numérico
-list_mayor_seven = df_extenciones.loc[mayor_seven,['id_transaccion_organismo', 'duration','end_date']]
+df_short_7 = df_7[['id_transaccion_organismo', 'duration','start_date','end_date']]
 ## Convierte la serie a un tipo de datos numérico
-df_merge_succ = pd.merge(list_mayor_seven, df_transacciones, on='id_transaccion_organismo', how='inner')
-df_merge_fil = df_merge_succ[['id_transaccion_organismo', 'location_id', 'monto_transaccion', 'end_date', 'duration']]
+df_pena = pd.merge(df_short_7, df_transacciones, on='id_transaccion_organismo', how='inner')
+df_merge_fil = df_pena[['id_transaccion_organismo', 'location_id', 'monto_transaccion', 'end_date', 'duration']]
 df_merge_fil['monto_transaccion'] = df_merge_fil['monto_transaccion'].apply(lambda x: x / 100)
 
 lista_tr_7s = f"RRE - Penalizaciones {mes}.xlsx"

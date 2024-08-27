@@ -1,12 +1,13 @@
 import json
 import pandas as pd
 import os
-
+from fuzzywuzzy import fuzz
 ##
-sem = '33'
+sem = '34'
 y = '2024'
-file = 'sem_33_12-18_ago'
+file = 'sem_34_19-25_ago'
 file_bans = 'banned_mails.json'
+umbral_similitud=80
 ##
 won = 'Ganados: '
 lost = 'Perdidos: '
@@ -101,23 +102,62 @@ df['date_created'] = pd.to_datetime(df['date_created'], format='%d/%m/%Y %H:%M:%
 df['operation_date_created'] = pd.to_datetime(df['operation_date_created'], format='%d/%m/%Y %H:%M:%S')
 
 ##
-
 with open(json_bans, 'r') as f:
     data_bans = json.load(f)
-    print(data_bans)  # Imprime la lista cargada desde el archivo
-reincidents = []
-for user in data_bans:
-  df_user = df[df['operation_external_reference'] == user]
-  fechas = set(df_user['operation_date_created'])
-  print(set(df_user['operation_date_created']))
-  for fecha in fechas:
-    if fecha >= fecha_limit:
-      print('valio vrg')
-      reincidents.append(df_user)
-print(reincidents)
+print('Buscando correos no baneados y reincidentes...')
+def no_ban(row,correos_baneados):
+  correo = row['operation_external_reference']
+  if correo in correos_baneados:
+    return True
+  else:
+    return False
+   
+df['No_ban'] = df.apply(no_ban, axis=1 , args=(data_bans,))
+nobans = df[df['No_ban'] == False]
+corr_nb = set(nobans['operation_external_reference'])
+new_bans = []
+for user in corr_nb:
+  df_user = nobans[nobans['operation_external_reference'] == user]
+  # new_bans.append(df_user)
+  reincidencias = len(df_user)
+  monto = sum(df_user['operation_amount'])
+  if reincidencias >= 2 and monto >= 200:
+    new_bans.append({
+      'Usuario': user,
+      'Reincidencias': reincidencias,
+      'Monto': monto
+    })
+    
+df_to_ban = pd.DataFrame(new_bans)
+print('Buscando operaciones recientes..')
+###
+fechas = set(df['operation_date_created'])
+news = []
+for fecha in fechas:
+  if fecha >= fecha_limit:
+    df_dia = df[df['operation_date_created'] == fecha]
+    news.append(df_dia)
+df_news = pd.concat(news)
 
-print(sum(df['operation_amount']))
+# Cargar datos (como en el ejemplo anterior)
+print('Buscando correos sospechosos en nuevas operaciones...')
+def es_sospechoso(row, correos_baneados, umbral_similitud=80):
+    correo = row['operation_external_reference']
+    usuario = correo.split('@')[0]
+    if correo in correos_baneados:
+        return True
+    for correo_baneado in correos_baneados:
+        usuario_baneado = correo_baneado.split('@')[0]
+        if fuzz.ratio(usuario, usuario_baneado) >= umbral_similitud:
+            return True
+    return False
 
+df_news['sospechoso'] = df_news.apply(es_sospechoso, axis=1, args=(data_bans,))
+
+# Filtrar los registros sospechosos
+sospechosos = df_news[df_news['sospechoso']]
+# print(sospechosos)
+print('Creando resumen General...')
 ##
 df['operation_amount'] = df['operation_amount'].astype(float)
 ## Lista de montos
@@ -126,7 +166,6 @@ lista_montos.sort(reverse=True)
 montos = []
 for monto in lista_montos:
     df_mto = df[df['operation_amount'] == monto]
-    print(df_mto)
     num = len(df_mto)
     tt = monto * num
     montos.append({
@@ -135,6 +174,8 @@ for monto in lista_montos:
         'Total': tt
     })
 df_montos = pd.DataFrame(montos)    
+
+# print(df_montos)
 
 # Cread DataFrames con informacion dsegun el status del contracargo
 df_set = df[df["status"] == 'settled']
@@ -161,6 +202,9 @@ with pd.ExcelWriter(dump_file) as writer:
     df_dis_ord.to_excel(writer, index=False ,sheet_name=f'Resumen dispute')
     df_rei_ord.to_excel(writer, index=False ,sheet_name=f'Resumen reimbursed')
     df_cov_ord.to_excel(writer, index=False ,sheet_name=f'Resumen covered')
+    df_to_ban.to_excel(writer,index=False,sheet_name='Reincidentes')
+    if len(sospechosos) > 0:
+      sospechosos.to_excel(writer,index=False,sheet_name='Sospechosos')
 
 ##
 df_won = df[df['status'] == 'reimbursed']
@@ -178,3 +222,5 @@ def df_by_status(df,file,detail):
 df_by_status(df_won,dump_file_won,won)
 df_by_status(df_lost,dump_file_lost,lost)
 df_by_status(df_dispute,dump_file_dispute,disputa)
+
+print('Proceso Finalizado con Exito!')

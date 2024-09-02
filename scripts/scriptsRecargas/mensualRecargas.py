@@ -5,8 +5,8 @@ import json
 from openpyxl import Workbook
 ## Primer fecha compuesta de la consulta 
 y= "2024"
-mes = "Julio"
-m = "07"
+mes = "Agosto"
+m = "08"
 dia_in = "1"
 dia_fn= "31"
 ###

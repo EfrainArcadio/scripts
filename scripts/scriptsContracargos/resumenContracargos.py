@@ -3,9 +3,9 @@ import pandas as pd
 import os
 from fuzzywuzzy import fuzz
 ##
-sem = '34'
+sem = '35'
 y = '2024'
-file = 'sem_34_19-25_ago'
+file = 'sem_35_26_ago-01_sep'
 file_bans = 'banned_mails.json'
 umbral_similitud=80
 ##

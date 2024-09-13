@@ -5,8 +5,8 @@ import psycopg2
 y= "2024"
 mes = "Septiembre"
 m = "09"
-dia_in = 1
-dia_fn = 2
+dia_in = 2
+dia_fn = 9
 ##
 tablaExtName = f"datos_ext_rre_{y}"
 tablaTraName = f"datos_rre_{y}"
@@ -22,6 +22,7 @@ pathInfo = os.path.join(parent_dir,pathStringInfo)
 json_db = "db.json" 
 path_db = "config/"
 path_json_db = os.path.join(path_db,json_db)
+print(path_json_db)
 with open(path_json_db) as f:
     data_conn = json.load(f)
 ## coneaccion
@@ -105,11 +106,16 @@ df_tra = pd.concat(transacciones)
 # Verificando si la columna existe y renombrando si es necesario
 # Eliminar la columna duplicada
 df_tra = df_tra.drop_duplicates()
+# print(df_tra.columns)
 if 'CONTRACT_SALE_SAME' in df_tra.columns:
     df_tra.rename(columns={'CONTRACT_SALE_SAME': 'CONTRACT_SALE_SAM'}, inplace=True)
 # print(df_tra.columns)
-df_tra = df_tra[['ID_TRANSACCION_ORGANISMO','PROVIDER','TIPO_TARJETA','NUMERO_SERIE_HEX','FECHA_HORA_TRANSACCION','TIPO_EQUIPO','LOCATION_ID','TIPO_TRANSACCION','SALDO_ANTES_TRANSACCION','MONTO_TRANSACCION','SALDO_DESPUES_TRANSACCION','SAM_SERIAL_HEX_ULTIMA_RECARGA','SAM_SERIAL_HEX','CONTADOR_RECARGAS','EVENT_LOG','LOAD_LOG','MAC','SAM_COUNTER','ENVIRONMENT','ENVIRONMET_ISSUER_ID','CONTRACT','CONTRACT_TARIFF','CONTRACT_SALE_SAM','CONTRACT_RESTRICT_TIME','CONTRACT_VALIDITY_START_DATE','CONTRACT_VALIDITY_DURATION']]
 
+df_tra = df_tra.loc[:, ~df_tra.columns.duplicated()]
+# print(columnas_duplicadas)
+df_tra = df_tra[['ID_TRANSACCION_ORGANISMO','PROVIDER','TIPO_TARJETA','NUMERO_SERIE_HEX','FECHA_HORA_TRANSACCION','TIPO_EQUIPO','LOCATION_ID','TIPO_TRANSACCION','SALDO_ANTES_TRANSACCION','MONTO_TRANSACCION','SALDO_DESPUES_TRANSACCION','SAM_SERIAL_HEX_ULTIMA_RECARGA','SAM_SERIAL_HEX','CONTADOR_RECARGAS','EVENT_LOG','LOAD_LOG','MAC','SAM_COUNTER','ENVIRONMENT','ENVIRONMET_ISSUER_ID','CONTRACT','CONTRACT_TARIFF','CONTRACT_SALE_SAM','CONTRACT_RESTRICT_TIME','CONTRACT_VALIDITY_START_DATE','CONTRACT_VALIDITY_DURATION']]
+df_tra = df_tra.drop_duplicates()
+# print(df_tra.columns)
 if connection:
   print("Conexión exitosa")
   print(f"Llenando tabla {tablaExtName} ...")

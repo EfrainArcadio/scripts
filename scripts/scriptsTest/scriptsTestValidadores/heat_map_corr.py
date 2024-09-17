@@ -1,31 +1,39 @@
 import pandas as pd
 import os
-
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+import matplotlib as mpl
 ## Define: mes ="Febrero" --- Nombre del mes
-mes = "Julio"
+mes = "Septiembre"
 ## Define: m ="02"  ---- Numero del mes
-m = "07"
+m = "09"
 ## Define: y ="2024" --- Año a tomar en cuenta en el analisis
 y = "2024"
 ## Rango de dias semanales L - V Agregando + 1 al viernes ** Leer documentacion metodo range
-diaI = 15
-diaF = 20
+diaI = 9
+diaF = 14
 sem = range(diaI,diaF)
+
+print(sem)
 ## Dia más afluente de la semana
-dma = '17'
+dma = '10'
 ## Sabado
-sb = '20'
+sb = '14'
 ## Domingo
-dm = '21'
+dm = '15'
 ## ------- Definir datos de Entrada --------
+
+
+
 ruta_trabajo = f"data/{y}/{m} {mes}/"
-archivo = 'Validaciones del 15 al 21 de julio 2024.csv'
+archivo = 'Validaciones semana 37 2024.csv'
 archivo = os.path.join(ruta_trabajo, archivo)
 # Lectura del archivo de Entrada
 df = pd.read_csv(archivo, low_memory=False, encoding='latin-1')
 ## ------- Definir datos de Salida --------
 ## Semana completa
-semana = '15 al 21'
+semana = '09 al 15'
 ## Nombre del archivo y ruta de salida
 fn = f'RE_BUS_{semana}_{mes}.xlsx'
 ruta_doc = os.path.join(ruta_trabajo, fn)
@@ -43,7 +51,7 @@ json_info = {
 }
 ## Convertir el TIPO_TRANSACCION a 
 df['TIPO_TRANSACCION'] = df['TIPO_TRANSACCION'].astype(str)
-df_val = df[df['TIPO_TRANSACCION'] == '3']
+df_val = df[df['TIPO_TRANSACCION'] == '3'].copy()
 ## Remplazar El Codigo de la linea por nombre
 for codigo, info in json_info.items():
     df_val.replace({'LINEA': codigo}, info['nombre'], inplace=True)
@@ -76,6 +84,42 @@ for codigo, info in json_info.items():
 # Create Pandas DataFrame from results
 prom_lv = pd.DataFrame(resem)
 
+# print(prom_lv)
+# data_for_heatmap = prom_lv.iloc[:, 1:].columns.to_list()
+# data_for = prom_lv.iloc[:, 1:]
+# # Convierte el DataFrame a un array de NumPy
+# data_array = data_for.to_numpy()
+# print(data_array)
+# data = np.array(data_array)
+# print(data)
+# conce = prom_lv['Concesionario'].tolist()
+# horas = data_for_heatmap
+# print(conce)
+# print(horas)
+# print(data_for)
+
+# fig, ax = plt.subplots()
+# im = ax.imshow(data)
+
+# # Show all ticks and label them with the respective list entries
+# ax.set_xticks(np.arange(len(conce)), labels=conce)
+# ax.set_yticks(np.arange(len(horas)), labels=horas)
+
+# # Rotate the tick labels and set their alignment.
+# plt.setp(ax.get_xticklabels(), rotation=45, ha="right",
+#          rotation_mode="anchor")
+
+# # Loop over data dimensions and create text annotations.
+# for i in range(len(horas)):
+#     print(i)
+#     for j in range(len(conce)):
+#         print(j)
+#         text = ax.text(j, i, data_for[i, j],
+#                        ha="center", va="center", color="w")
+
+# ax.set_title("Harvest of local farmers (in tons/year)")
+# fig.tight_layout()
+# plt.show()
 ## Estructura SEMANAL
 
 ## Crear

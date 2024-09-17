@@ -1,4 +1,5 @@
 config/db.json
 public/recargas
 public/validaciones
+scripts/scriptsTest/scriptsTestValidadores/data/2024
 .env

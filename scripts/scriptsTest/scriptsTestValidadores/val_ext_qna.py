@@ -47,7 +47,5 @@ for tr in list_ext:
   extemp.append(df_new)
 df_extemp = pd.concat(extemp)
 ## 
-file_ext = f'Extemporaneas_{qna}_qna_{mes}.csv'
-ruta_ext = os.path.join(path_work,file_ext)
-df_extemp.to_csv(ruta_ext,index=False)
+
 # print(df_extemp)

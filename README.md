@@ -5,7 +5,7 @@
 ```json
 {
   "host": "host",
-  "database": "database",
+  "database": "database_name",
   "user": "user",
   "password": "password", 
   "port": "port"

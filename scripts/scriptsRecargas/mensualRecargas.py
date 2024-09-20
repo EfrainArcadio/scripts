@@ -5,10 +5,10 @@ import json
 from openpyxl import Workbook
 ## Primer fecha compuesta de la consulta 
 y= "2024"
-mes = "Agosto"
-m = "08"
+mes = "Junio"
+m = "06"
 dia_in = "1"
-dia_fn= "31"
+dia_fn= "30"
 ###
 app = '101801'
 dig = '101800'
@@ -136,6 +136,9 @@ df_suc = df_transacciones[df_transacciones['tipo_transaccion'] == '0'].copy()
 df_suc['fecha_hora_transaccion'] = df_suc['fecha_hora_transaccion'].dt.strftime('%Y-%m-%d')
 fechas_unicas = sorted(set(df_suc['fecha_hora_transaccion']))
 ##
+
+print(df_suc[df_suc['location_id'] == '101800'])
+
 res = resumen_transacciones(df_suc,fechas_unicas)
 df_res = pd.DataFrame(res)
 

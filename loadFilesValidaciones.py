@@ -1,5 +1,7 @@
 import pandas as pd
 import os
+import json
+import psycopg2
 ## Variables 
 y= "2024"
 mes = "Enero"
@@ -18,6 +20,11 @@ file_to_upload = f'{name_file}.csv'
 ## Lectura del archivo y transformacion a DataFrame
 archivo = os.path.join(pathInfo, file_to_upload) 
 df = pd.read_csv(archivo, low_memory=False, encoding='latin-1')
+def impute_dates(df):
+  default_date = f'2021-08-13 00:00:00'
+  df['CONTRACT_VALIDITY_START_DATE'] = df['CONTRACT_VALIDITY_START_DATE'].fillna(default_date)
+## end inpute_dates
+impute_dates(df)
 ## Funcion de Subida de Archivos
 def uploadTra(df, table_name, connection):
   try:
@@ -37,19 +44,29 @@ def uploadTra(df, table_name, connection):
     print(f"Se han cargado {len(df)} filas a la tabla {table_name} del {mes}")
   except Exception as e:
     print(e.__class__.__name__, ":", e)
-##
-
-
-print(len(df.columns))
-
+## end function uploadTra
+## Database 
+json_db = "db.json" 
+path_db = "config/"
+path_json_db = os.path.join(path_db,json_db)
+print(path_json_db)
+with open(path_json_db) as f:
+  data_conn = json.load(f)
+## coneccion
+connection = psycopg2.connect(**data_conn)
+cursor = connection.cursor()
+## Se recorta el DataFrame a solo las columnas que utiliza este sistema
 df_short = df[['ID_TRANSACCION_ORGANISMO','PROVIDER','TIPO_TARJETA','NUMERO_SERIE_HEX','FECHA_HORA_TRANSACCION','LINEA','ESTACION','AUTOBUS','RUTA','TIPO_EQUIPO','LOCATION_ID','TIPO_TRANSACCION','SALDO_ANTES_TRANSACCION','MONTO_TRANSACCION','SALDO_DESPUES_TRANSACCION','SAM_SERIAL_HEX_ULTIMA_RECARGA','SAM_SERIAL_HEX','CONTADOR_VALIDACIONES','EVENT_LOG','PURCHASE_LOG','MAC','ENVIRONMENT','ENVIRONMENT_ISSUER_ID','CONTRACT','CONTRACT_TARIFF','CONTRACT_SALE_SAM','CONTRACT_VALIDITY_START_DATE','CONTRACT_VALIDITY_DURATION']]
 
-print(len(df_short.columns))
 
+## Ejecucion de las inserciones
+if connection:
+  print("Conexión exitosa")
+  print(f"Llenando tabla {tablaExtName} ...")
+  uploadTra(df_short,tablaExtName,connection)
 
-
-
-
+"InvalidDatetimeFormat : la sintaxis de entrada no es válida para tipo timestamp: «Invalid date»"
+"LINE 3: ...'::float, '172', 'NaN'::float, 1.0, 'NaN'::float, 'Invalid d..."
 
 
 

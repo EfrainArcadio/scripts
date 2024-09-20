@@ -78,7 +78,7 @@ def uploadExt(df, table_name, connection):
     print(f"Se han cargado {len(df)} filas a la tabla {table_name} del {mes}")
   except Exception as e:
     print(e.__class__.__name__, ":", e)
-##
+## end function uploadExt
 def uploadTra(df, table_name, connection):
   try:
     columns = list(df.columns)
@@ -97,7 +97,7 @@ def uploadTra(df, table_name, connection):
     print(f"Se han cargado {len(df)} filas a la tabla {table_name} del {mes}")
   except Exception as e:
     print(e.__class__.__name__, ":", e)
-##
+## end function uploadTra
 df_ext = pd.concat(extenciones)  
 df_tra = pd.concat(transacciones)
 df_tra = pd.concat(transacciones)

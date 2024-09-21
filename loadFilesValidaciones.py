@@ -4,10 +4,10 @@ import json
 import psycopg2
 ## Variables 
 y= "2024"
-mes = "Enero"
-m = "01"
+mes = "Septiembre"
+m = "09"
 ## Nombre corto del archivo sin extencion .csv
-name_file = 'Validaciones de la 1ra qna de enero 2024'
+name_file = 'Validaciones de la semana 37 2024'
 ## Nombre dinamico de la tabla a la que se le cargaran los datos nuevos
 tablaExtName = f"datos_val_{y}"
 ### definicion y creacion de Rutas de trabajo
@@ -20,6 +20,15 @@ file_to_upload = f'{name_file}.csv'
 ## Lectura del archivo y transformacion a DataFrame
 archivo = os.path.join(pathInfo, file_to_upload) 
 df = pd.read_csv(archivo, low_memory=False, encoding='latin-1')
+### 
+def convertir_fecha(fecha):
+  try:
+    # Intentar convertir directamente al formato deseado
+    return pd.to_datetime(fecha, format='%Y-%m-%d %H:%M:%S')
+  except ValueError:
+    # Si falla, intentar inferir el formato
+    return pd.to_datetime(fecha,  format='%Y-%m-%d %H:%M:%S')
+## End convertir_fecha
 def impute_dates(df):
   default_date = f'2021-08-13 00:00:00'
   df['CONTRACT_VALIDITY_START_DATE'] = df['CONTRACT_VALIDITY_START_DATE'].fillna(default_date)
@@ -58,6 +67,11 @@ cursor = connection.cursor()
 ## Se recorta el DataFrame a solo las columnas que utiliza este sistema
 df_short = df[['ID_TRANSACCION_ORGANISMO','PROVIDER','TIPO_TARJETA','NUMERO_SERIE_HEX','FECHA_HORA_TRANSACCION','LINEA','ESTACION','AUTOBUS','RUTA','TIPO_EQUIPO','LOCATION_ID','TIPO_TRANSACCION','SALDO_ANTES_TRANSACCION','MONTO_TRANSACCION','SALDO_DESPUES_TRANSACCION','SAM_SERIAL_HEX_ULTIMA_RECARGA','SAM_SERIAL_HEX','CONTADOR_VALIDACIONES','EVENT_LOG','PURCHASE_LOG','MAC','ENVIRONMENT','ENVIRONMENT_ISSUER_ID','CONTRACT','CONTRACT_TARIFF','CONTRACT_SALE_SAM','CONTRACT_VALIDITY_START_DATE','CONTRACT_VALIDITY_DURATION']]
 
+# Aplicar la función al DataFrame
+df_short['FECHA_HORA_TRANSACCION'] = df_short['FECHA_HORA_TRANSACCION'].apply(convertir_fecha)
+df_short['CONTRACT_VALIDITY_START_DATE'] = df_short['CONTRACT_VALIDITY_START_DATE'].apply(convertir_fecha)
+
+
 
 ## Ejecucion de las inserciones
 if connection:
@@ -65,8 +79,6 @@ if connection:
   print(f"Llenando tabla {tablaExtName} ...")
   uploadTra(df_short,tablaExtName,connection)
 
-"InvalidDatetimeFormat : la sintaxis de entrada no es válida para tipo timestamp: «Invalid date»"
-"LINE 3: ...'::float, '172', 'NaN'::float, 1.0, 'NaN'::float, 'Invalid d..."
 
 
 

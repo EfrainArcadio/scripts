@@ -4,8 +4,8 @@ import glob
 ### Variables 
 ## fechas
 y= "2024"
-mes = "Enero"
-m = "01"
+mes = "Agosto"
+m = "08"
 ## Carpetas
 r1 = 'respaldos'
 r2 = 'Python Scripts'
@@ -52,7 +52,10 @@ path_verify(ruta_qna_2)
 
 ##
 
+print('Buscando informacion...')
 if ruta_qna_1 and ruta_qna_2:
+  print('Informacion Encontrada ...')
+  print('Procesando informacion ...')
   ## Mapings cols
   mapping = {
     'Id Transaccion Organismo': 'ID_TRANSACCION_ORGANISMO',
@@ -67,7 +70,7 @@ if ruta_qna_1 and ruta_qna_2:
     'Latitud': 'LATITUD',
     'Longitud': 'LONGITUD'
   }
-  print('Trabajando 1 qna')
+  print(f'Trabajando con el  mes de {mes}')
   ## Carga de archivos
   archivos_1 = glob.glob(os.path.join(ruta_qna_1, '*.csv'))
   archivos_2 = glob.glob(os.path.join(ruta_qna_2, '*.csv'))
@@ -75,17 +78,20 @@ if ruta_qna_1 and ruta_qna_2:
   df_col_rename_1 = []
   for archivo1,archivo2 in zip(archivos_1,archivos_2):
     df1 = pd.read_csv(archivo1,encoding='latin-1',low_memory=False).rename(columns=mapping)
+    # print(f"1ra Quincena {len(df1)} datos")
     df2 = pd.read_csv(archivo2,encoding='latin-1',low_memory=False).rename(columns=mapping)
+    # print(f"2da Quincena {len(df2)} datos")
     df_short1 = df1[['ID_TRANSACCION_ORGANISMO','FECHA_HORA_TRANSACCION','LONGITUD','LATITUD']]
     df_short2 = df2[['ID_TRANSACCION_ORGANISMO','FECHA_HORA_TRANSACCION','LONGITUD','LATITUD']]
     df_col_rename_1.append(df_short1)
     df_col_rename_1.append(df_short2)
   
   df_final = pd.concat(df_col_rename_1)
-  print(df_final)
+  print(f"Archivo Final: {len(df_final)} datos")
   
   ruta_out = os.path.join(ruta_dumps,archivo_f)
   df_final.to_csv(ruta_out, index=False)
+  print("Proceso Realizado con Exito..")
 
 
 

@@ -17,7 +17,7 @@ file_dispute = f'{sem}_dispute_contracargo.json'
 ## Fechas
 fecha_limit_1 = '13-08-2024 23:59:59'
 fecha_limit_1 = pd.to_datetime(fecha_limit_1, format='%d-%m-%Y %H:%M:%S')
-fecha_limit_2 = '20-09-2024 23:59:59'
+fecha_limit_2 = '18-09-2024 23:59:59'
 fecha_limit_2 = pd.to_datetime(fecha_limit_2, format='%d-%m-%Y %H:%M:%S')
 ## Utilidades
 won = 'Ganados: '
@@ -182,8 +182,8 @@ df_to_ban = pd.DataFrame(new_bans)
 
 df_to_ban_list = df_to_ban['Usuario'].unique().tolist()
 print("Correos a Banear:",len(df_to_ban_list))
-lista_x = [[e for e in df_to_ban_list if e in lista_final]]
-if len(lista_x) > 1:
+lista_x = [e for e in df_to_ban_list if e in lista_final]
+if len(lista_x) > 0:
   print("Correos a banear en baneados",len(lista_x))
 print('Buscando operaciones recientes..')
 ##

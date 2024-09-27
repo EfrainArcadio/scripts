@@ -4,16 +4,17 @@ import json
 import psycopg2
 ## Variables 
 y= "2024"
-mes = "Septiembre"
-m = "09"
+mes = "Enero"
+m = "01"
 ## Nombre corto del archivo sin extencion .csv
-name_file = 'Validaciones de la semana 37 2024'
+name_file = 'Validaciones 2da qna enero 2024'
 ## Nombre dinamico de la tabla a la que se le cargaran los datos nuevos
 tablaExtName = f"datos_val_{y}"
 ### definicion y creacion de Rutas de trabajo
 pathStringInfo = f'dataFiles/validaciones/{y}/{m} {mes}'
 current_dir = os.getcwd()
 parent_dir = os.path.dirname(current_dir)
+##
 pathInfo = os.path.join(parent_dir,pathStringInfo)
 ## nombre dinamico del archivo utilizado para subir informacion a la base de datos con ext .csv
 file_to_upload = f'{name_file}.csv'
@@ -39,7 +40,7 @@ def uploadTra(df, table_name, connection):
   try:
     columns = list(df.columns)
     unique_col = columns[0]
-    lowercase_columns = [name.lower() for name in columns]
+    lowercase_columns = [ name.lower() for name in columns ]
     cursor = connection.cursor()
     datos = df.values
     querry = f"""
@@ -58,20 +59,18 @@ def uploadTra(df, table_name, connection):
 json_db = "db.json" 
 path_db = "config/"
 path_json_db = os.path.join(path_db,json_db)
-print(path_json_db)
+# print(path_json_db) 
 with open(path_json_db) as f:
   data_conn = json.load(f)
 ## coneccion
 connection = psycopg2.connect(**data_conn)
 cursor = connection.cursor()
 ## Se recorta el DataFrame a solo las columnas que utiliza este sistema
-df_short = df[['ID_TRANSACCION_ORGANISMO','PROVIDER','TIPO_TARJETA','NUMERO_SERIE_HEX','FECHA_HORA_TRANSACCION','LINEA','ESTACION','AUTOBUS','RUTA','TIPO_EQUIPO','LOCATION_ID','TIPO_TRANSACCION','SALDO_ANTES_TRANSACCION','MONTO_TRANSACCION','SALDO_DESPUES_TRANSACCION','SAM_SERIAL_HEX_ULTIMA_RECARGA','SAM_SERIAL_HEX','CONTADOR_VALIDACIONES','EVENT_LOG','PURCHASE_LOG','MAC','ENVIRONMENT','ENVIRONMENT_ISSUER_ID','CONTRACT','CONTRACT_TARIFF','CONTRACT_SALE_SAM','CONTRACT_VALIDITY_START_DATE','CONTRACT_VALIDITY_DURATION']]
+df_short = df[['ID_TRANSACCION_ORGANISMO','PROVIDER','TIPO_TARJETA','NUMERO_SERIE_HEX','FECHA_HORA_TRANSACCION','LINEA','ESTACION','AUTOBUS','RUTA','TIPO_EQUIPO','LOCATION_ID','TIPO_TRANSACCION','SALDO_ANTES_TRANSACCION','MONTO_TRANSACCION','SALDO_DESPUES_TRANSACCION','SAM_SERIAL_HEX_ULTIMA_RECARGA','SAM_SERIAL_HEX','CONTADOR_VALIDACIONES','EVENT_LOG','PURCHASE_LOG','MAC','ENVIRONMENT','ENVIRONMENT_ISSUER_ID','CONTRACT','CONTRACT_TARIFF','CONTRACT_SALE_SAM','CONTRACT_VALIDITY_START_DATE','CONTRACT_VALIDITY_DURATION']].copy()
 
-# Aplicar la función al DataFrame
+# # Aplicar la función al DataFrame
 df_short['FECHA_HORA_TRANSACCION'] = df_short['FECHA_HORA_TRANSACCION'].apply(convertir_fecha)
 df_short['CONTRACT_VALIDITY_START_DATE'] = df_short['CONTRACT_VALIDITY_START_DATE'].apply(convertir_fecha)
-
-
 
 ## Ejecucion de las inserciones
 if connection:

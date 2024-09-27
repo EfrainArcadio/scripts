@@ -2,13 +2,13 @@ import os
 import pandas as pd
 
 ## Definimos el mes con nombre
-mes = "Julio"
+mes = "Septiembre"
 ## Definimos el mes con número
-m = "07"
+m = "09"
 ## Definimos el año
 y = "2024"
 
-name_file = '1ra_qna_Julio_2024'
+name_file = '1ra_qna_Septiembre_2024_v2'
 ## La ruta de trabaajo es la ruta donde se leen y se generan los archivos
 ruta_trabajo = f"data/{y}/{m} {mes}"
 

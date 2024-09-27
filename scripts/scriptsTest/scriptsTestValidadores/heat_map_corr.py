@@ -11,29 +11,29 @@ m = "09"
 ## Define: y ="2024" --- Año a tomar en cuenta en el analisis
 y = "2024"
 ## Rango de dias semanales L - V Agregando + 1 al viernes ** Leer documentacion metodo range
-diaI = 9
-diaF = 14
+diaI = 16
+diaF = 21
 sem = range(diaI,diaF)
 
 print(sem)
 ## Dia más afluente de la semana
-dma = '10'
+dma = '18'
 ## Sabado
-sb = '14'
+sb = '21'
 ## Domingo
-dm = '15'
+dm = '22'
 ## ------- Definir datos de Entrada --------
 
 
 
 ruta_trabajo = f"data/{y}/{m} {mes}/"
-archivo = 'Validaciones semana 37 2024.csv'
+archivo = 'Validaciones semana 38 2024.csv'
 archivo = os.path.join(ruta_trabajo, archivo)
 # Lectura del archivo de Entrada
 df = pd.read_csv(archivo, low_memory=False, encoding='latin-1')
 ## ------- Definir datos de Salida --------
 ## Semana completa
-semana = '09 al 15'
+semana = '16 al 22'
 ## Nombre del archivo y ruta de salida
 fn = f'RE_BUS_{semana}_{mes}.xlsx'
 ruta_doc = os.path.join(ruta_trabajo, fn)

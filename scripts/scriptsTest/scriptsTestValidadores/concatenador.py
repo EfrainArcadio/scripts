@@ -4,10 +4,10 @@ import glob
 
 ## Directorio donde se encuentran los archivos CSV y la cual sera la base de trabajo del Script
 y = '2024'
-mes= 'Julio'
-m = '07'
+mes= 'Septiembre'
+m = '08'
 ##
-c = '1ra Qna'
+c = '1ra'
 ##
 periodo = '1ra_qna'
 ##

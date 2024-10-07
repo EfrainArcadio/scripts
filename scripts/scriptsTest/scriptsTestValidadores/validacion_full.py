@@ -12,11 +12,11 @@ m = "09"
 y = "2024"
 folder_p = 'semanas'
 # folder_p = 'quincenas'
-periodo = 'semana 38'
+periodo = 'semana 39'
 # periodo = '1ra qna'
 # periodo = '2da qna'
 ## Nombres de archivos
-name_file = "Validaciones semana 38 2024"
+name_file = "Validaciones semana 39"
 file = f'{name_file}.csv'
 json_int = "integradores.json"
 json_tot = "transacciones.json"
@@ -45,16 +45,11 @@ def remplazo_valores(data_json,df,column):
 def resumen(lista,df,n_col,lista_tp):
   dic_el = []
   for element in lista:
-    # print(element)
-    # print(n_col)
     df_element = df[df[f'{n_col}'] == element]
-    # print(df_element['TIPO_TRANSACCION'].value_counts())
     df_bus = df_element[df_element['TIPO_TRANSACCION'] == 'Debito en Bus']
     df_ban = df_element[df_element['TIPO_TRANSACCION'] == 'Debito en bano']
     mto_bus = df_bus['MONTO_TRANSACCION'].sum() / 100
     mto_ban = df_ban['MONTO_TRANSACCION'].sum() / 100
-    # print(mto_bus)
-    # print(mto_ban)
     dic = []
     dic.append({'Monto Autobus': mto_bus} )
     dic.append({'Monto Bano': mto_ban} )
@@ -63,21 +58,16 @@ def resumen(lista,df,n_col,lista_tp):
       z = len(df_tot)
       dic.append({tot: z})
     dic_el.append({element:dic})
-  # print(dic_el)
   return dic_el
 ## end resumen
 def read_list(lista,col_name):
-  # print(col_name)
   data = []
   for key_l in lista:
     for key_d in key_l:
       data_key_e = key_l[f'{key_d}'] 
-      # print(key_d)
       for element in data_key_e:
         label = list(element.keys())[0]
         cantidad = element[label]
-        # print(label)
-        # print(cantidad)
         data.append({
         f'{col_name}': key_d,
         f'{label}': cantidad    
@@ -87,7 +77,6 @@ def read_list(lista,col_name):
   df_grouped = df_grouped.reset_index()
 # Aplicar la solución
   columnas_numericas = df_grouped.select_dtypes(include=['number']).columns
-  # print(columnas_numericas)
   total_row = pd.DataFrame(df_grouped[columnas_numericas].sum()).T
   total_row[f'{col_name}'] = 'Total'
   df_final = pd.concat([df_grouped, total_row], ignore_index=True)

@@ -5,8 +5,8 @@ import json
 from openpyxl import Workbook
 ## Primer fecha compuesta de la consulta 
 y= "2024"
-mes = "Junio"
-m = "06"
+mes = "Septiembre"
+m = "09"
 dia_in = "1"
 dia_fn= "30"
 ###
@@ -21,6 +21,8 @@ ruta_superior = os.path.dirname(ruta_actual)
 ruta_sup_2 = os.path.dirname(ruta_superior)
 ##
 ruta_dumps = os.path.join(ruta_sup_2,f'public/recargas/meses/{y}/{m} {mes}')
+file_d = f'recargas_desglosadas_rre_{y}_{m}'
+path_file_d = os.path.join(ruta_dumps,f'{file_d}.csv')
 def path_verify(path):
   if not os.path.exists(path):
     os.makedirs(path)
@@ -35,7 +37,7 @@ with open(json_conn, 'r') as f_conn:
 connection = psycopg2.connect(**data_conn)
 ## Consulta para extraer todos los datos del periodo de tiempo seleccionado
 cursor = connection.cursor()
-cursor.execute(f"SELECT * FROM datos_rre_2024 WHERE fecha_hora_transaccion >= '{y}-{m}-{dia_in} 00:00:00' AND fecha_hora_transaccion <= '{y}-{m}-{dia_fn} 23:59:59'")
+cursor.execute(f"SELECT * FROM datos_rre_{y} WHERE fecha_hora_transaccion >= '{y}-{m}-{dia_in} 00:00:00' AND fecha_hora_transaccion <= '{y}-{m}-{dia_fn} 23:59:59'")
 transacciones = cursor.fetchall()
 ##
 newDatos = []
@@ -70,7 +72,7 @@ for fila in transacciones:
   })
 ##
 cursor2 = connection.cursor()
-cursor2.execute(f"SELECT * FROM datos_ext_rre_2024 WHERE start_date >= '{y}-{m}-{dia_in} 00:00:00' AND start_date <= '{y}-{m}-{dia_fn} 23:59:59'")
+cursor2.execute(f"SELECT * FROM datos_ext_rre_{y} WHERE start_date >= '{y}-{m}-{dia_in} 00:00:00' AND start_date <= '{y}-{m}-{dia_fn} 23:59:59'")
 extenciones = cursor2.fetchall()
 newExtenciones = []
 for fila in extenciones:
@@ -135,9 +137,33 @@ def resumen_transacciones(df,fechas_unicas):
 df_suc = df_transacciones[df_transacciones['tipo_transaccion'] == '0'].copy()
 df_suc['fecha_hora_transaccion'] = df_suc['fecha_hora_transaccion'].dt.strftime('%Y-%m-%d')
 fechas_unicas = sorted(set(df_suc['fecha_hora_transaccion']))
+
+reemplazos = {
+    '101800': 'Red Digital',
+    '201A00': 'Red Comercios',
+    '101801': 'APPCDMX',
+ }
+data_short = []
+for fecha in fechas_unicas:
+  df_dia = df_suc[df_suc['fecha_hora_transaccion'] == fecha]
+  for codigo, reemplazo in reemplazos.items():
+      df_dia.replace({'location_id':codigo}, reemplazo, inplace=True)
+  tipos = df_dia['location_id'].unique().tolist()
+  for tipo in tipos:
+    df_red = df_dia[df_dia['location_id'] == tipo]
+    recargas = len(df_red)
+    data_short.append({
+      'FECHA': fecha,
+      'TIPO_RED': tipo,
+      'RECARGAS': recargas
+    })
+
+df_short = pd.DataFrame(data_short)
+df_short.to_csv(path_file_d,index=False)
+print(df_short)
 ##
 
-print(df_suc[df_suc['location_id'] == '101800'])
+# print(df_suc[df_suc['location_id'] == '101800'])
 
 res = resumen_transacciones(df_suc,fechas_unicas)
 df_res = pd.DataFrame(res)
@@ -228,17 +254,21 @@ tt_fisico = df_res['Montos Fisicos'].sum()
 tt_digital = df_res['Montos Digitales'].sum()
 tt_appcdmx = df_res['Montos AppCDMX'].sum()
 tt_abs_digital = tt_digital + tt_appcdmx
+print(tt_abs_digital)
 mt_total = tt_fisico + tt_digital + tt_appcdmx
 ## Se realizan las condicionales para ajustar el porcentaje automaticamente segun el total segun sea el caso fisica o digital  
 ## Condicional de porcentaje Digital
 if tt_abs_digital <= r1:
-    pr_com_dig = pr_dg1
+  pr_com_dig = pr_dg1
 elif tt_abs_digital <= r2:
-    pr_com_dig = pr_dg2
+  pr_com_dig = pr_dg2
 elif tt_abs_digital <= r3:
-    pr_com_dig = pr_dg3
+  pr_com_dig = pr_dg3
 elif tt_abs_digital <= r4:
-    pr_com_dig = pr_dg4
+  pr_com_dig = pr_dg4
+elif tt_abs_digital >= r4:
+  pr_com_dig = pr_dg4
+  print('desde',r4)
     
 ## Condicional de porcentaje Fisico
 if tt_fisico <= r1:

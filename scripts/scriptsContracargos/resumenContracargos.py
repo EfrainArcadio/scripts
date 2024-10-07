@@ -3,17 +3,19 @@ import pandas as pd
 import os
 from fuzzywuzzy import fuzz
 ## localizacion de archivos
-sem = '38'
+sem = '40'
 y = '2024'
-file = 'sem_38_16-22_sep'
+file = 'sem_40_30_sep-06_oct'
 ## archivos json correos baneados
 file_bans_v1 = 'banned_mails_v1.json'
 file_bans_v2 = 'banned_mails_v2.json'
+file_bans_v3 = 'banned_mails_v3.json'
 ## archivos dumps
 file_dump = f'{sem}_AppCDMX_Analisis_Contracargos.xlsx'
 file_won = f'{sem}_won_contracargo.json'
 file_lost = f'{sem}_lost_contracargo.json'
 file_dispute = f'{sem}_dispute_contracargo.json'
+file_nb = f'{sem}_correos_desbaneo.json'
 ## Fechas
 fecha_limit_1 = '13-08-2024 23:59:59'
 fecha_limit_1 = pd.to_datetime(fecha_limit_1, format='%d-%m-%Y %H:%M:%S')
@@ -100,6 +102,7 @@ dump_file = os.path.join(ruta_dumps,file_dump)
 dump_file_won = os.path.join(ruta_dumps,file_won)
 dump_file_lost = os.path.join(ruta_dumps,file_lost)
 dump_file_dispute = os.path.join(ruta_dumps,file_dispute)
+dump_file_nb = os.path.join(ruta_dumps,file_nb)
 ### Ruta json
 ## json emails bans
 json_bans_v1 = os.path.join(ruta_bans,file_bans_v1)
@@ -109,6 +112,10 @@ with open(json_bans_v1, 'r') as f:
 json_bans_v2 = os.path.join(ruta_bans,file_bans_v2)
 with open(json_bans_v2, 'r') as f:
     data_bans_2 = json.load(f)
+## json emails bans
+json_bans_v3 = os.path.join(ruta_bans,file_bans_v3)
+with open(json_bans_v3, 'r') as f:
+    data_bans_3 = json.load(f)
 ## archivo contracargos
 path_file = os.path.join(path_files,f'{file}.csv')
 df = pd.read_csv(path_file)
@@ -156,7 +163,8 @@ df['operation_date_created'] = pd.to_datetime(df['operation_date_created'], form
 ###############################################################################
 print('Analizando correos baneados...')
 ## busca correos unicos
-lista_final = list(set(data_bans_1) | set(data_bans_2))
+lista_first = list(set(data_bans_1) | set(data_bans_2))
+lista_final = list(lista_first + data_bans_3)
 ## aplica funcion de no_ban al DF
 df['No_ban'] = df.apply(no_ban, axis=1 , args=(lista_final,))
 ## buscar correos no baneados y crear un DataFrame de estos
@@ -229,42 +237,54 @@ df_montos = pd.DataFrame(montos)
 # print(df_montos)
 
 # Cread DataFrames con informacion dsegun el status del contracargo
+df_rei = df[df["status"] == 'reimbursed']
 df_set = df[df["status"] == 'settled']
 df_dis = df[df["status"] == 'dispute']
-df_rei = df[df["status"] == 'reimbursed']
 df_cov = df[df["status"] == 'covered']
+df_dpe = df[df["status"] == 'documentation_pending']
 ## Utilizamos la funcion para crear un DataFrame con la informacion Resumida
 df_gen = pd.DataFrame(gen_report_by_status(df))
+df_rei_fn = pd.DataFrame(gen_report_by_status(df_rei))
 df_set_fn = pd.DataFrame(gen_report_by_status(df_set))
 df_dis_fn = pd.DataFrame(gen_report_by_status(df_dis))
-df_rei_fn = pd.DataFrame(gen_report_by_status(df_rei))
 df_cov_fn = pd.DataFrame(gen_report_by_status(df_cov))
+df_dpe_fn = pd.DataFrame(gen_report_by_status(df_dpe))
 
 df_gen_ord = df_gen.sort_values(by='Reincidencias',ascending=False)
 df_set_ord = df_set_fn.sort_values(by='Reincidencias',ascending=False)
 df_dis_ord = df_dis_fn.sort_values(by='Reincidencias',ascending=False)
 df_rei_ord = df_rei_fn.sort_values(by='Reincidencias',ascending=False)
 df_cov_ord = df_cov_fn.sort_values(by='Reincidencias',ascending=False)
+df_dpe_ord = df_cov_fn.sort_values(by='Reincidencias',ascending=False)
 
 with pd.ExcelWriter(dump_file) as writer:
   df_montos.to_excel(writer, index=False ,sheet_name=f'Resumen Montos')
   df_gen_ord.to_excel(writer, index=False ,sheet_name=f'Resumen General')
-  df_set_ord.to_excel(writer, index=False ,sheet_name=f'Resumen settled')
-  df_dis_ord.to_excel(writer, index=False ,sheet_name=f'Resumen dispute')
   df_rei_ord.to_excel(writer, index=False ,sheet_name=f'Resumen reimbursed')
+  df_set_ord.to_excel(writer, index=False ,sheet_name=f'Resumen settled')
   df_cov_ord.to_excel(writer, index=False ,sheet_name=f'Resumen covered')
+  df_dis_ord.to_excel(writer, index=False ,sheet_name=f'Resumen dispute')
+  df_dpe_ord.to_excel(writer, index=False ,sheet_name=f'Resumen documentation_pending')
   df_to_ban.to_excel(writer,index=False,sheet_name='Reincidentes')
   if len(sospechosos1) > 0:
     sospechosos1.to_excel(writer,index=False,sheet_name='Baneos 60')
-  # if len(sospechosos2) > 0:
-    #   sospechosos2.to_excel(writer,index=False,sheet_name='Sospechosos 397')
+  if len(sospechosos2) > 0:
+      sospechosos2.to_excel(writer,index=False,sheet_name='Sospechosos 397')
 
 ##
 df_won = df[df['status'] == 'reimbursed']
 df_lost = df[(df['status'] == 'settled') | (df['status'] == 'covered') ]
 df_dispute = df[(df['status'] == 'dispute') | (df['status'] == 'documentation_pending') ]
 
+email_won = df_won['operation_external_reference'].unique().tolist()
+email_lost = df_lost['operation_external_reference'].unique().tolist()
+email_dispute = df_dispute['operation_external_reference'].unique().tolist()
 
+lista_nb = [e for e in email_won if not e in email_lost or email_dispute]
+print(len(lista_nb))
+
+with open(dump_file_nb, 'w') as f:
+    json.dump(lista_nb, f)
 
 df_by_status(df_won,dump_file_won,won)
 df_by_status(df_lost,dump_file_lost,lost)

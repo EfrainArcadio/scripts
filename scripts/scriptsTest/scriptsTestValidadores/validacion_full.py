@@ -12,7 +12,7 @@ m = "09"
 y = "2024"
 folder_p = 'semanas'
 # folder_p = 'quincenas'
-periodo = 'semana 39'
+periodo = '39'
 # periodo = '1ra qna'
 # periodo = '2da qna'
 ## Nombres de archivos
@@ -39,8 +39,11 @@ def path_verify(path):
 def remplazo_valores(data_json,df,column):
   for origen,replacements in data_json.items():
     for origen_dict in replacements:
+      # print(origen_dict)
       for codigo, replacement in origen_dict.items():
+        # print(replacement)
         df.replace({f'{column}':codigo},replacement,inplace=True)
+        # print(replacement)
 ## end remplazo_valores    
 def resumen(lista,df,n_col,lista_tp):
   dic_el = []
@@ -82,17 +85,66 @@ def read_list(lista,col_name):
   df_final = pd.concat([df_grouped, total_row], ignore_index=True)
   return df_final
 ## end read_list
-
+def heat_sheet(df,array,dias):
+  if len(dias) == 5:
+    print("dias_mayor a 5")
+    for origin,info_int in data_int.items():
+      for inte in info_int:
+        name = inte['name']
+        pv = inte['pv']
+        key = inte['key']
+        if pv != '0':
+          df.replace({'LINEA': key}, name, inplace=True)
+          # print(df['LINEA'].value_counts())
+          df_linea = df[df['LINEA'] == name]
+          # print(df_linea)
+          data = {'Concesionario': name, 'Parque Vehicular Total': pv} 
+          autobuses_por_hora = {f"{hora:02d}:00": 0 for hora in range(24)}
+          for dia in dias:
+            for hora in range(0, 24):
+              inicio = f"{dia} {hora:02d}:00"
+              fin = f"{dia} {(hora+1):02d}:00"
+              # print(inicio)
+              # print(fin)
+              df_hora = df_linea[(df_linea['FECHA_HORA_TRANSACCION'] >= inicio) & (df_linea['FECHA_HORA_TRANSACCION'] < fin)]
+              # print(df_hora)
+              autobuses_por_hora[f"{hora:02d}:00"] += len(df_hora['AUTOBUS'].unique())
+          for hora in autobuses_por_hora:
+            autobuses_por_hora[hora] /= 5
+            data[hora] = autobuses_por_hora[hora]
+          array.append(data)
+  else:
+    for origin,info_int in data_int.items():
+      for inte in info_int:
+        name = inte['name']
+        pv = inte['pv']
+        key = inte['key']
+        if pv != '0':
+          df.replace({'LINEA': key}, name, inplace=True)
+          df_linea = df[df['LINEA'] == name]
+          # print(df_linea['FECHA_HORA_TRANSACCION'].va)
+          data = {'Concesionario': name, 'Parque Vehicular Total': pv} 
+          for dia in dias:
+            # print(dia)
+            for hora in range(0, 24):
+              inicio = f"{dia} {hora:02d}:00"
+              fin = f"{dia} {(hora+1):02d}:00"
+              df_hora = df_linea[(df_linea['FECHA_HORA_TRANSACCION'] >= inicio) & (df_linea['FECHA_HORA_TRANSACCION'] < fin)]
+              # print(df_hora)
+              data[f"{hora:02d}:00"] = len(df_hora['AUTOBUS'].unique())
+        # Append data for current line to the results
+            array.append(data)
+## end heat_sheet
 ####################################################################################################
 ruta_actual = os.getcwd()
-print(ruta_actual)
+# print(ruta_actual)
 parent_dir = os.path.dirname(ruta_actual)
 # ## Subir un nivel en el directorio
 # ## Produccion
 ruta_test_json = os.path.join(ruta_actual,'scripts/scriptsTest/scriptsTestValidadores/data')
 path_files = os.path.join(ruta_actual,f'scripts/scriptsTest/scriptsTestValidadores/data/{y}/{m} {mes}')
 # path_files = os.path.join(parent_dir,f'dataFiles/validaciones/{y}/{m} {mes}')
-path_dumps = os.path.join(ruta_actual,f'public/validaciones/{folder_p}/{y}')
+path_dumps = os.path.join(ruta_actual,f'public/validaciones/{folder_p}/{y}/{periodo}')
 path_verify(path_dumps)
 
 ## Ruta donde se leen los archivos json
@@ -113,15 +165,24 @@ df['TIPO_TRANSACCION'] = df['TIPO_TRANSACCION'].astype('str')
 ###############################################################################
 ## Funciones de modificacion de datos
 remplazo_valores(data_tot,df,tot_v)
-remplazo_valores(data_int,df,linea)
+df_bus = df[df['TIPO_TRANSACCION'] == 'Debito en Bus'].copy()
+#
+for origin,info_int in data_int.items():
+  for inte in info_int:
+    key = inte['key']
+    name = inte['name']
+    ##
+    df.replace({'LINEA': key}, name, inplace=True)
 ## Crear Listas a utilizar
 lineas = df['LINEA'].unique().tolist()
+# print(lineas)
 tipos = df['TIPO_TRANSACCION'].unique().tolist()
 ## Modificar formato de las fechas
 df['FECHA_HORA_TRANSACCION'] = pd.to_datetime(df['FECHA_HORA_TRANSACCION'],format='mixed')  
-df['FECHA_HORA_TRANSACCION'] = df['FECHA_HORA_TRANSACCION'].dt.strftime('%Y-%m-%d')
+df['FECHA_HORA_TRANSACCION'] = df['FECHA_HORA_TRANSACCION'].dt.strftime('%d/%m/%Y')
 ## Obtener fechas unicas
 fechas_unicas = sorted(set(df['FECHA_HORA_TRANSACCION']))
+
 ##  Aplicar Resumen
 fechas = resumen(fechas_unicas,df,dato_fec,tipos)
 lineas = resumen(lineas,df,linea,tipos)
@@ -132,7 +193,56 @@ df_lineas = read_list(lineas,col_n_l)
 lista = f"res_validaciones_{periodo}_{m}_{y}.xlsx"
 ruta_lista = os.path.join(path_dumps,lista)
 ## Generacion de archivo de resultados
+
 with pd.ExcelWriter(ruta_lista) as writer:
   df_fechas.to_excel(writer, index=False ,sheet_name=f'Resumen Validaciones ')
   df_lineas.to_excel(writer, index=False ,sheet_name=f'Resumen Linea ')
+## HEATMAP
+l_v = fechas_unicas[:5]
+s = fechas_unicas[5:-1]
+d = fechas_unicas[6:]
+
+adma = []
+for dia in l_v:
+  df_day = df[df['FECHA_HORA_TRANSACCION'] == dia]
+  size = len(df_day)
+  adma.append({
+    "dia":dia,
+    "size": size
+  })
+df_l_v_s = pd.DataFrame(adma)
+
+df_dma = df_l_v_s[df_l_v_s['size'] == max(df_l_v_s['size']) ]
+
+dma_s = df_dma['dia'].unique()
+
+array_l_v = []
+heat_sheet(df_bus,array_l_v,l_v)
+res_l_v = pd.DataFrame(array_l_v)
+
+array_dma = []
+heat_sheet(df_bus,array_dma,dma_s)
+res_dma = pd.DataFrame(array_dma)
+
+array_s = []
+heat_sheet(df_bus,array_s,s)
+res_s = pd.DataFrame(array_s)
+
+array_d = []
+heat_sheet(df_bus,array_d,d)
+res_d = pd.DataFrame(array_d)
+
+
+file = f"res_bus_{periodo}_{m}_{y}.xlsx"
+ruta_file = os.path.join(path_dumps,file)
+## Generacion de archivo de resultados
+df_ordenado_l_v= res_l_v.sort_values(by='Concesionario')
+df_ordenado_dma= res_dma.sort_values(by='Concesionario')
+df_ordenado_s= res_s.sort_values(by='Concesionario')
+df_ordenado_d= res_d.sort_values(by='Concesionario')
+with pd.ExcelWriter(ruta_file) as writer:
+  df_ordenado_l_v.to_excel(writer, index=False ,sheet_name=f'Promedio Semanal')
+  df_ordenado_dma.to_excel(writer, index=False ,sheet_name=f'Resumen DMA')
+  df_ordenado_s.to_excel(writer, index=False ,sheet_name=f'Resumen Sabado ')
+  df_ordenado_d.to_excel(writer, index=False ,sheet_name=f'Resumen Domingo')
 print('Proceso realizado con exito')

@@ -3,14 +3,14 @@ import os
 #### Variables
 ## fechas
 y = '2024'
-m = '01'
-mes = 'Enero'
+m = '02'
+mes = 'Febrero'
 ## periodo
-qna = '1ra'
-# qna = '2da'
+# qna = '1ra'
+qna = '2da'
 ## archivos
-name_file_v1 = 'Validaciones de la 1ra qna de enero 2024'
-name_file_v2 = '1ra_qna_Enero_2024_v2'
+name_file_v1 = 'Validaciones 2da qna febrero 2024'
+name_file_v2 = '2da_qna_Febrero_2024_v2'
 ######### Funciones #####
 def path_verify(path):
   if not os.path.exists(path):
@@ -61,22 +61,45 @@ print('Buscado Nuevas Transacciones ...')
 list_ext = ( e for e in id_tr2 if e not in id_tr1 )
 list_no_2 = ( e for e in id_tr1 if e not in id_tr2 )
 ## Nuevos Resultados  
-print('Nuevos Resultados')
 ##
 df_extemp = tr_verify(df_file_v2,list_ext)
-# print(df_extemp)
+print(f'Nuevos Resultados: {len(df_extemp)}')
 ## datos file extemp
 file_ext = f'extemp_{qna}_qna_{mes}.csv'
+print('Generando archivo extemporaneos')
+print(f'Generando CSV: {file_ext}')
 ruta_ext = os.path.join(path_dumps,file_ext)
 df_extemp.to_csv(ruta_ext,index=False)
 print(df_extemp['LINEA'].value_counts())
-print('Generando archivo extemporaneos')
+lin_f = df_extemp['LINEA'].unique().tolist()
+df_extemp['TIPO_TRANSACCION'] = df_extemp['TIPO_TRANSACCION'].astype(str)
+res_f = []
+for linea in lin_f:
+  df_lf = df_extemp[df_extemp['LINEA'] == linea]
+  # print(df_lf['TIPO_TRANSACCION'].value_counts())
+  df_valids = df_lf[(df_lf['TIPO_TRANSACCION'] == '5') | (df_lf['TIPO_TRANSACCION'] == '3')]
+  monto_ext = sum(df_valids['MONTO_TRANSACCION']) / 100
+  res_f.append({
+    "Linea": linea,
+    "Transacciones": len(df_valids),
+    "Monto":monto_ext
+  })
+
+df_res_f = pd.DataFrame(res_f)
+file_rext = f're_extemp_{qna}_qna_{mes}.csv'
+ruta_rext = os.path.join(path_dumps,file_rext)
+df_res_f.to_csv(ruta_rext,index=False)
+
+
 ## condicional para faltantes
-if len(list(list_no_2)) > 0:
+if any(list_no_2):
+  print('Falta informacion por analizar...')
   df_faltante = tr_verify(df_file_v1,list_no_2)
-  print(len(df_faltante))
+  print('Faltan: ',len(df_faltante))
   file_falt = f'faltante_{qna}_qna_{mes}.csv'
+  print(f'Generando CSV: {file_falt}')
   ruta_ext = os.path.join(path_dumps,file_falt)
   df_faltante.to_csv(ruta_ext,index=False)
-elif len(list(list_no_2) < 0):
-  print('No existen faltantes se revizo el archivo completo')
+else:
+  print('No hay existe informacion por analizar...')
+print('Proceso Realizado con exito')

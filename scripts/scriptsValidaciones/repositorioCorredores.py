@@ -4,8 +4,8 @@ import glob
 ### Variables 
 ## fechas
 y= "2024"
-mes = "Agosto"
-m = "08"
+mes = "Septiembre"
+m = "09"
 ## Carpetas
 r1 = 'respaldos'
 r2 = 'Python Scripts'
@@ -24,7 +24,7 @@ def path_verify(path):
 ## end path_verify
 
 ### folder dump
-folder = 'repositorioCorredores_Ene-Ago-2024'
+folder = 'repositorioCorredores'
 ## carpetas de archivos
 qna_1 = f'{r1}/{r2}/{y}/{m} {mes}/1ra/gps'
 qna_2 = f'{r1}/{r2}/{y}/{m} {mes}/2da/gps'
@@ -43,7 +43,7 @@ parent_dir = os.path.dirname(current_dir)
 ruta_qna_1 = os.path.join( parent_dir,qna_1)
 ruta_qna_2 = os.path.join( parent_dir,qna_2)
 ## Rutas Dumps
-ruta_dumps = os.path.join( current_dir,f'public/validaciones/{y}/{folder}')
+ruta_dumps = os.path.join( current_dir,f'public/validaciones/{folder}/{y}')
 
 ## verifys
 path_verify(ruta_dumps)
@@ -58,7 +58,8 @@ if ruta_qna_1 and ruta_qna_2:
   print('Procesando informacion ...')
   ## Mapings cols
   mapping = {
-    'Id Transaccion Organismo': 'ID_TRANSACCION_ORGANISMO',
+    'Id Transaccion Organismo': 'ID_TRANSACCION_ORGANISMO', 
+    'ï»¿ID_TRANSACCION_ORGANISMO': 'ID_TRANSACCION_ORGANISMO', 
     'Numero Serie Hex': 'NUMERO_SERIE_HEX',
     'Fecha Hora Transaccion': 'FECHA_HORA_TRANSACCION',
     'Linea': 'LINEA',
@@ -79,19 +80,29 @@ if ruta_qna_1 and ruta_qna_2:
   for archivo1,archivo2 in zip(archivos_1,archivos_2):
     df1 = pd.read_csv(archivo1,encoding='latin-1',low_memory=False).rename(columns=mapping)
     # print(f"1ra Quincena {len(df1)} datos")
+    df1['TIPO_TRANSACCION'] = df1['TIPO_TRANSACCION'].astype(str)
+    df1_valid = df1[df1['TIPO_TRANSACCION'] == '3']
+    # print(f"1ra Quincena {df1.columns} datos")
     df2 = pd.read_csv(archivo2,encoding='latin-1',low_memory=False).rename(columns=mapping)
-    # print(f"2da Quincena {len(df2)} datos")
-    df_short1 = df1[['ID_TRANSACCION_ORGANISMO','FECHA_HORA_TRANSACCION','LONGITUD','LATITUD']]
-    df_short2 = df2[['ID_TRANSACCION_ORGANISMO','FECHA_HORA_TRANSACCION','LONGITUD','LATITUD']]
+
+    df2['TIPO_TRANSACCION'] = df2['TIPO_TRANSACCION'].astype(str)
+    df2_valid = df2[df2['TIPO_TRANSACCION'] == '3']
+    
+    # print(f"2da Quincena {df2.columns} datos")
+    df_short1 = df1_valid[['ID_TRANSACCION_ORGANISMO','FECHA_HORA_TRANSACCION','LONGITUD','LATITUD']]
+    df_short2 = df2_valid[['ID_TRANSACCION_ORGANISMO','FECHA_HORA_TRANSACCION','LONGITUD','LATITUD']]
     df_col_rename_1.append(df_short1)
     df_col_rename_1.append(df_short2)
   
-  df_final = pd.concat(df_col_rename_1)
-  print(f"Archivo Final: {len(df_final)} datos")
-  
-  ruta_out = os.path.join(ruta_dumps,archivo_f)
-  df_final.to_csv(ruta_out, index=False)
-  print("Proceso Realizado con Exito..")
+df_final = pd.concat(df_col_rename_1)
+print(f"Archivo Final: {len(df_final)} datos")
+df_final = df_final[(df_final['LATITUD'] != '0' ) & (df_final['LONGITUD'] != '0' )]
+df_final = df_final[(df_final['LATITUD'] != 0 ) & (df_final['LONGITUD'] != 0 )]
+df_final = df_final[(df_final['LATITUD'] != 0.0 ) & (df_final['LONGITUD'] != 0.0 )]
+print(f"Archivo Final: {len(df_final)} datos")
+ruta_out = os.path.join(ruta_dumps,archivo_f)
+df_final.to_csv(ruta_out, index=False)
+print("Proceso Realizado con Exito..")
 
 
 

@@ -5,11 +5,12 @@ import glob
 ## Directorio donde se encuentran los archivos CSV y la cual sera la base de trabajo del Script
 y = '2024'
 mes= 'Septiembre'
-m = '08'
+m = '09'
 ##
-c = '1ra'
+c = '2da'
+# c = '1ra'
 ##
-periodo = '1ra_qna'
+periodo = f'{c}_qna'
 ##
 archivo_f = f'{periodo}_{mes}_{y}.csv'
 ##

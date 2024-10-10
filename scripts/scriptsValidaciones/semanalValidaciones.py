@@ -16,7 +16,7 @@ periodo = '40'
 # periodo = '1ra qna'
 # periodo = '2da qna'
 ## Nombres de archivos
-name_file = "Validaciones semana 40"
+name_file = "Validaciones de la semana 40 2024"
 file = f'{name_file}.csv'
 json_int = "integradores.json"
 json_tot = "transacciones.json"

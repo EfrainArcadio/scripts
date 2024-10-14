@@ -9,15 +9,15 @@ import numpy as np
 ###############################################################################
 ## Primer fecha compuesta de la consulta 
 yi = '2024'
-mi = '09'
-di = '30'
+mi = '10'
+di = '07'
 ## Segunda fecha compuesta de la consulta
 yf = '2024'
 mf = '10'
-df = '06'
+df = '14'
 ## Datos Extra
 mes = 'Octubre'
-sem = '40'
+sem = '41'
 ##
 app = '101801'
 dig = '101800'

@@ -1,0 +1,26 @@
+{
+  "exitosas":
+  [
+    {"3": "Debito en Bus"},
+    {"5": "Debito en bano"},
+    {"70": "Gratuidad de operacion"},
+    {"71": "Cambio de Tarifa"},
+    {"7": "Transbordo"},
+    {"11": "Salida"},
+    {"4": "Salida"}
+  ],
+  "erroneas":
+  [
+    {"0D": "Rechazo de Tarjeta en BlackList"},
+    {"13": "Rechazo de Tarjeta fuera de WhiteList"},
+    {"51": "Abortada-Saldo insuficiente"},
+    {"53": "Abortada-Saldo Mayor al maximo"},
+    {"54": "Abortada-Aplicacion de Transporte invalido"},
+    {"55": "Abortada-Contrato Invalido"},
+    {"61": "Abortada-Culquier otro Caso"},
+    {"60": "Abortada-Vigencia expirada"},
+    {"FF": "Sin descripcion"}
+  ]
+
+}
+ 

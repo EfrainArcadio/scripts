@@ -1,0 +1,46 @@
+{
+  "MICROSAFE": 
+  [
+    {"key":"1","name":"MIIT","pv":"142"},
+    {"key":"2","name":"SAUSA","pv":"66"},
+    {"key":"3","name":"ATROLSA","pv":"57"},
+    {"key":"4","name":"CEUSA","pv":"65"},
+    {"key":"9","name":"COPATTSA","pv":"0"},
+    {"key":"D","name":"AMOPSA","pv":"0"},
+    {"key":"E","name":"CETRAM ZAPATA","pv":"0"}  
+  ],
+  "CONDUENT": 
+  [
+    {"key":"7","name":"AULSA","pv":"62"},
+    {"key":"11","name":"CODIVERSA","pv":"54"},
+    {"key":"13","name":"TVO","pv":"0"},
+    {"key":"34","name":"CETRAM BUENAVISTA","pv":"0"},
+    {"key":"36","name":"CETRAM TACUBAYA","pv":"0"}
+  ],
+  "JM": 
+  [
+    {"key":"15","name":"ABC","pv":"76"},
+    {"key":"16","name":"MOVIN","pv":"86"}
+  ],
+  "BEA": 
+  [
+    {"key":"5","name":"TRIOXA","pv":"0"}
+  ],
+  "MPESO": 
+  [
+    {"key":"6","name":"ACASA","pv":"0"}
+  ],
+  "INSITRA": 
+  [
+    {"key":"12","name":"COPESA","pv":"0"}    
+  ],
+  "SCSOFT":
+  [
+    {"key":"17","name":"COAVEO","pv":"0"},    
+    {"key":"10","name":"COVITENI","pv":"0"},    
+    {"key":"F","name":"CASSUR","pv":"0"},    
+    {"key":"14","name":"COTAXOMIL","pv":"163"}    
+  ]
+
+}
+

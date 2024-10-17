@@ -12,11 +12,10 @@ m = "10"
 y = "2024"
 folder_p = 'semanas'
 # folder_p = 'quincenas'
-periodo = '40'
-# periodo = '1ra qna'
-# periodo = '2da qna'
+periodo = '41'
+
 ## Nombres de archivos
-name_file = "Validaciones de la semana 40 2024"
+name_file = "Validaciones semana 41"
 file = f'{name_file}.csv'
 json_int = "integradores.json"
 json_tot = "transacciones.json"

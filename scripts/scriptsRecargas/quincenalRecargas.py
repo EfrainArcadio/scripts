@@ -70,7 +70,7 @@ df_short_tr = df_transacciones[[
 ]]
 ##
 print('Creando archivo Short Transacciones...')
-short_file = f'{qna}_qna_{mes}_{y}{a}.csv'
+short_file = f'{qna}_qna_{mes}_{y}{a}'
 ruta_res = os.path.join(ruta_dumps,short_file)
 df_short_tr.to_csv(ruta_res,index=False)
 ##

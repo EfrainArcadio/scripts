@@ -3,9 +3,9 @@ import pandas as pd
 import os
 from fuzzywuzzy import fuzz
 ## localizacion de archivos
-sem = '40'
+sem = '42'
 y = '2024'
-file = 'sem_40_30_sep-06_oct'
+file = 'sem_42_14-20_oct'
 ## archivos json correos baneados
 file_bans_v1 = 'banned_mails_v1.json'
 file_bans_v2 = 'banned_mails_v2.json'
@@ -281,7 +281,7 @@ email_lost = df_lost['operation_external_reference'].unique().tolist()
 email_dispute = df_dispute['operation_external_reference'].unique().tolist()
 
 lista_nb = [e for e in email_won if not e in email_lost or email_dispute]
-print(len(lista_nb))
+print('Correos para Desbanear',len(lista_nb))
 
 with open(dump_file_nb, 'w') as f:
     json.dump(lista_nb, f)

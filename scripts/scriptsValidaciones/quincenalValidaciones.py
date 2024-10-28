@@ -5,18 +5,18 @@ import json
 #                           Carga de archivos                                 #
 ###############################################################################
 ## Definimos el mes con nombre
-mes = "Septiembre"
+mes = "Octubre"
 ## Definimos el mes con número
-m = "09"
+m = "10"
 ## Definimos el año
 y = "2024"
 folder_p = 'quincenas'
 # folder_p = 'quincenas'
 # periodo = '40'
-# periodo = '1ra qna'
-periodo = '2da qna'
+periodo = '1ra qna'
+# periodo = '2da qna'
 ## Nombres de archivos
-name_file = "2da_qna_Septiembre_2024"
+name_file = "1ra_qna_Octubre_2024"
 file = f'{name_file}.csv'
 json_int = "integradores.json"
 json_tot = "transacciones.json"
@@ -94,7 +94,7 @@ parent_dir = os.path.dirname(ruta_actual)
 # ## Produccion
 ruta_test_json = os.path.join(ruta_actual,'scripts/scriptsValidaciones/data')
 # path_files = os.path.join(ruta_actual,f'scripts/scriptsTest/scriptsTestValidadores/data/{y}/{m} {mes}')
-path_files = os.path.join(parent_dir,f'dataFiles/validaciones/{folder_p}/{y}')
+path_files = os.path.join(parent_dir,f'dataFiles/validaciones/{y}/{m} {mes}/')
 
 path_dumps = os.path.join(ruta_actual,f'public/validaciones/{folder_p}/{y}')
 path_verify(path_dumps)

@@ -12,10 +12,10 @@ m = "10"
 y = "2024"
 folder_p = 'semanas'
 # folder_p = 'quincenas'
-periodo = '41'
+periodo = '42'
 
 ## Nombres de archivos
-name_file = "Validaciones semana 41"
+name_file = "Validaciones semana 42"
 file = f'{name_file}.csv'
 json_int = "integradores.json"
 json_tot = "transacciones.json"
@@ -122,6 +122,8 @@ def heat_sheet(df,array,dias):
         if pv != '0':
           df.replace({'LINEA': key}, name, inplace=True)
           df_linea = df[df['LINEA'] == name]
+          if(name == 'AULSA'):
+            print(df_linea['AUTOBUS'].value_counts())
           # print(df_linea['FECHA_HORA_TRANSACCION'].va)
           data = {'Concesionario': name, 'Parque Vehicular Total': pv} 
           for dia in dias:
@@ -180,10 +182,11 @@ tipos = df['TIPO_TRANSACCION'].unique().tolist()
 df['FECHA_HORA_TRANSACCION'] = pd.to_datetime(df['FECHA_HORA_TRANSACCION'], format='%d/%m/%Y %H:%M')
 df['FECHA_HORA_TRANSACCION'] = df['FECHA_HORA_TRANSACCION'].dt.strftime('%d/%m/%Y')
 ## Obtener fechas unicas
-fechas_unicas = df['FECHA_HORA_TRANSACCION'].unique().tolist()
+fechas_unicas = sorted(df['FECHA_HORA_TRANSACCION'].unique().tolist())
 print(fechas_unicas)
-fechas_unicas = fechas_unicas[::-1]
-print(fechas_unicas)
+# fechas_unicas = fechas_unicas[::-1]
+# fechas_unicas = sorted(fechas_unicas)
+# print(fechas_unicas)
 ##  Aplicar Resumen
 print("Generando Resumen")
 fechas = resumen(fechas_unicas,df,dato_fec,tipos)
@@ -208,13 +211,15 @@ d = fechas_unicas[6:]
 adma = []
 for dia in l_v:
   df_day = df[df['FECHA_HORA_TRANSACCION'] == dia]
-  size = len(df_day)
+  df_valids = df_day[df_day['TIPO_TRANSACCION'] == 'Debito en Bus'] 
+  df_valids_b = df_day[df_day['TIPO_TRANSACCION'] == 'Debito en Bano'] 
+  size = len(df_valids) + len(df_valids_b)
   adma.append({
     "dia":dia,
     "size": size
   })
 df_l_v_s = pd.DataFrame(adma)
-
+# print(df_l_v_s)
 df_dma = df_l_v_s[df_l_v_s['size'] == max(df_l_v_s['size']) ]
 
 dma_s = df_dma['dia'].unique()

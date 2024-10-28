@@ -10,14 +10,14 @@ import numpy as np
 ## Primer fecha compuesta de la consulta 
 yi = '2024'
 mi = '10'
-di = '07'
+di = '21'
 ## Segunda fecha compuesta de la consulta
 yf = '2024'
 mf = '10'
-df = '14'
+df = '27'
 ## Datos Extra
 mes = 'Octubre'
-sem = '41'
+sem = '43'
 ##
 app = '101801'
 dig = '101800'
@@ -27,11 +27,14 @@ com = '201A00'
 #                           Carga de archivos                                 #
 ###############################################################################
 ## Obtener la ruta del directorio actual
-ruta_actual = os.path.dirname(__file__)
+
+ruta_actual = os.getcwd()
+print(ruta_actual)
 ## Subir un nivel en el directorio
 ruta_superior = os.path.dirname(ruta_actual)
-ruta_sup_2 = os.path.dirname(ruta_superior)
-ruta_cats = os.path.join(ruta_actual,'data/')
+# ruta_sup_2 = os.path.dirname(ruta_superior)
+print(ruta_superior)
+ruta_cats = os.path.join(ruta_actual,'data')
 # print(ruta_sup_2)
 def path_verify(path):
   if not os.path.exists(path):
@@ -41,9 +44,11 @@ def path_verify(path):
     print(f'El Directorio ya existe: {path}')
 ##
 ###
-ruta_dumps = os.path.join( ruta_sup_2,f'public/recargas/semanas/{yi}/{sem}')
-ruta_dumps_mac = os.path.join(ruta_sup_2,f'public/recargas/semanas/{yi}/{sem}/MAC' )
+ruta_dumps = os.path.join( ruta_actual,f'public/recargas/semanas/{yi}/{sem}')
+ruta_dumps_mac = os.path.join(ruta_actual,f'public/recargas/semanas/{yi}/{sem}/MAC' )
 ## 
+print(ruta_dumps)
+print(ruta_dumps_mac)
 path_verify(ruta_dumps)
 path_verify(ruta_dumps_mac)
 
@@ -56,7 +61,7 @@ json_au = os.path.join(ruta_cats,'smartposAulsa.json')
 with open(json_au, 'r') as f_au:
   data_au = json.load(f_au)
 ## 
-json_conn = os.path.join(ruta_sup_2,f'config/db.json')
+json_conn = os.path.join(ruta_actual,f'config/db.json')
 with open(json_conn, 'r') as f_conn:
   data_conn = json.load(f_conn)
 ##

@@ -5,8 +5,8 @@ import psycopg2
 y= "2024"
 mes = "Octubre"
 m = "10"
-dia_in = 14
-dia_fn = 15 
+dia_in = 21
+dia_fn = 28 
 ##
 tablaExtName = f"datos_ext_rre_{y}"
 tablaTraName = f"datos_rre_{y}"

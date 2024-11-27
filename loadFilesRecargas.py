@@ -3,10 +3,10 @@ import os
 import json
 import psycopg2
 y= "2024"
-mes = "Octubre"
-m = "10"
-dia_in = 21
-dia_fn = 28 
+mes = "Noviembre"
+m = "11"
+dia_in = 11
+dia_fn = 25
 ##
 tablaExtName = f"datos_ext_rre_{y}"
 tablaTraName = f"datos_rre_{y}"

@@ -3,7 +3,7 @@ import pandas as pd
 import glob
 ## Datos Fnal
 y= "2024"
-m = "09"
+m = "10"
 ## File name dump
 archivo_f = f'recargas_desglosadas_rre_{y}_{m}.csv'
 ### Paths

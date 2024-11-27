@@ -3,9 +3,9 @@ import pandas as pd
 import os
 from fuzzywuzzy import fuzz
 ## localizacion de archivos
-sem = '42'
+sem = '45'
 y = '2024'
-file = 'sem_42_14-20_oct'
+file = 'sem_45_04-10_nov'
 ## archivos json correos baneados
 file_bans_v1 = 'banned_mails_v1.json'
 file_bans_v2 = 'banned_mails_v2.json'

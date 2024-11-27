@@ -2,9 +2,9 @@ import os
 import pandas as pd
 
 ## Definimos el mes con nombre
-mes = "Febrero"
+mes = "Octubre"
 ## Definimos el mes con número
-m = "02"
+m = "10"
 ## Definimos el año
 y = "2024"
 
@@ -15,14 +15,14 @@ ruta_trabajo = f"Validadores/{y}/{c2}"
 
 ## Es el periodo en el que se realiza el analisis
 periodo = "2da qna febrero"
-
+  
 ## Archivo a subir 
 file_to_upload = 'Validaciones 2da qna febrero 2024.csv'
 
 ## metodo para asignar la ruta al archivo
 archivo = os.path.join(ruta_trabajo, file_to_upload)
 df = pd.read_csv(archivo, low_memory=False, encoding='latin-1')
-df['ID_TRANSACCION_ORGANISMO'] = df['ID_TRANSACCION_ORGANISMO'].str.replace('.', '')
+df['ID_TRANSACCION_ORGANISMO'] = df['ID_TRANSACCION_ORGANISMO'].std.replace(',', '')
 
 archivo_mp = f"{c}_{periodo}.csv"
 ruta_mp = os.path.join(ruta_trabajo,archivo_mp)

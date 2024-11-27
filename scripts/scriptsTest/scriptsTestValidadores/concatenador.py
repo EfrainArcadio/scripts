@@ -4,8 +4,8 @@ import glob
 import json
 ## Directorio donde se encuentran los archivos CSV y la cual sera la base de trabajo del Script
 y = '2024'
-mes= 'Septiembre'
-m = '09'
+mes= 'Noviembre'
+m = '11'
 ##  
 c = '2da_v2'
 # c = '1ra_v2'
@@ -22,8 +22,10 @@ ruta_actual = os.getcwd()
 parent_dir = os.path.dirname(ruta_actual)
 ##
 ruta_test_data = f'/data'
-ruta_datainfo = f'respaldos/Python Scripts/Validadores/data/{y}/{m} {mes}/{c}'
+# ruta_datainfo = f'respaldos/Python Scripts/Validadores/data/{y}/{m} {mes}/{c}'
+
 ruta_datadump = f'dataFiles/validaciones/{y}/{m} {mes}'
+ruta_datainfo = f'dataFiles/validaciones/{y}/semanas/46/Mpeso'
 
 ruta_test_json = os.path.join(ruta_actual,'data')
 ruta_info = os.path.join(parent_dir,ruta_datainfo)

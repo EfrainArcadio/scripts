@@ -8,14 +8,14 @@ mes= 'Octubre'
 m = '10'
 ##  
 # c = '2da_v1'
-c = '1ra_cotaxo'
+c = '2da_tvo'
 ##
 ## File Names
 periodo = f'{c}_qna'
 json_ed = "modeloDatos.json"
 # archivo_f = f'{periodo}_{mes}_{y}_v2.csv'
 ##
-archivo_f = f'{periodo}_qna_aulsa_{mes}.csv'
+archivo_f = f'{periodo}_qna_tvo_bnos_{mes}.csv'
 ## paths
 ##
 ruta_actual = os.getcwd()
@@ -35,6 +35,7 @@ path_json_ed = os.path.join(ruta_test_json,json_ed)
 
 ##
 archivos = glob.glob(os.path.join(ruta_info, '*.csv'))
+
 ##
 with open(path_json_ed) as f:
     data_ed = json.load(f)
@@ -42,12 +43,16 @@ with open(path_json_ed) as f:
 dtypes = {col['column']: col['type'] for col in data_ed}
 ##
 dfs = []
+
 for archivo in archivos:
     # print(archivo)
     df = pd.read_csv(archivo,encoding='latin-1',low_memory=False)
-    df = df.rename(columns={'ï»¿ID_TRANSACCION_ORGANISMO': 'ID_TRANSACCION_ORGANISMO'})
+    # df = df.rename(columns={'ï»¿ID_TRANSACCION_ORGANISMO': 'ID_TRANSACCION_ORGANISMO'})
     dfs.append(df)
 df = pd.concat(dfs)
+df['ID_TRANSACCION_ORGANISMO'] = df['ID_TRANSACCION_ORGANISMO'].str.replace(',', '')
+
+df = df.astype(dtypes)
 ###
 
 # df['LOCATION_ID'] = df['LOCATION_ID'].astype(str).str.zfill(width=1)
@@ -68,9 +73,11 @@ df = pd.concat(dfs)
 # df['CONTRACT_VALIDITY_DURATION'] = df['CONTRACT_VALIDITY_DURATION'].astype('int64')
 ###
 
-df = df[~df['FECHA_HORA_TRANSACCION'].between('2024-09-30', '2024-09-30 23:59:59')]
+# df = df[~df['FECHA_HORA_TRANSACCION'].between('2024-09-30', '2024-09-30 23:59:59')]
+df = df[~df['FECHA_HORA_TRANSACCION'].between('2024-10-14', '2024-10-14 23:59:59')]
+df = df[~df['FECHA_HORA_TRANSACCION'].between('2024-10-15', '2024-10-15 23:59:59')]
 fechas_unicas = sorted(set(df['FECHA_HORA_TRANSACCION']))
-# print(fechas_unicas)
+print(fechas_unicas)
 print(df.info())
 df.to_csv(path_dump_file, index=False)
 print('Proceso finalizado con Exito')

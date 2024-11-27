@@ -5,17 +5,17 @@ import json
 #                           Carga de archivos                                 #
 ###############################################################################
 ## Definimos el mes con nombre
-mes = "Octubre"
+mes = "Noviembre"
 ## Definimos el mes con número
-m = "10"
+m = "11"
 ## Definimos el año
 y = "2024"
 folder_p = 'semanas'
 # folder_p = 'quincenas'
-periodo = '42'
+periodo = '47'
 
 ## Nombres de archivos
-name_file = "Validaciones semana 42"
+name_file = "Validaciones semana 47 2024"
 file = f'{name_file}.csv'
 json_int = "integradores.json"
 json_tot = "transacciones.json"
@@ -143,7 +143,7 @@ ruta_actual = os.getcwd()
 parent_dir = os.path.dirname(ruta_actual)
 # ## Subir un nivel en el directorio
 # ## Produccion
-ruta_test_json = os.path.join(ruta_actual,'scripts/scriptsValidaciones/data')
+ruta_test_json = os.path.join(ruta_actual,'data')
 # path_files = os.path.join(ruta_actual,f'scripts/scriptsTest/scriptsTestValidadores/data/{y}/{m} {mes}')
 path_files = os.path.join(parent_dir,f'dataFiles/validaciones/{y}/{folder_p}')
 path_dumps = os.path.join(ruta_actual,f'public/validaciones/{folder_p}/{y}/{periodo}')

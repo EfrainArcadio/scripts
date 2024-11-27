@@ -4,8 +4,8 @@ import glob
 ### Variables 
 ## fechas
 y= "2024"
-mes = "Septiembre"
-m = "09"
+mes = "Octubre"
+m = "10"
 ## Carpetas
 r1 = 'respaldos'
 r2 = 'Python Scripts'

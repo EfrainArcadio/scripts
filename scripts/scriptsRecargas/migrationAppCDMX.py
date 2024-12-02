@@ -34,11 +34,11 @@ with open(json_conn, 'r') as f_conn:
 connection = psycopg2.connect(**data_conn)
 ##
 tu1 = connection.cursor()
-tu1.execute("SELECT DISTINCT numero_serie_hex FROM datos_rre_2023 WHERE fecha_hora_transaccion >= '2023-11-01 00:00:00' AND fecha_hora_transaccion <= '2023-12-31 23:59:59'  AND tipo_transaccion = '0' AND location_id IN ('101800','201A00') AND tipo_transaccion IS NOT NULL UNION SELECT DISTINCT numero_serie_hex FROM datos_rre_2024 WHERE fecha_hora_transaccion >= '2024-01-01 00:00:00' AND fecha_hora_transaccion <= '2024-10-31 23:59:59' AND tipo_transaccion = '0' AND location_id IN ('101800','201A00') AND tipo_transaccion IS NOT NULL ")
+tu1.execute("SELECT DISTINCT numero_serie_hex FROM datos_rre_2023 WHERE fecha_hora_transaccion >= '2023-11-01 00:00:00' AND fecha_hora_transaccion <= '2023-12-31 23:59:59'  AND tipo_transaccion = '0' AND location_id IN ('101800','201A00') AND tipo_transaccion IS NOT NULL UNION SELECT DISTINCT numero_serie_hex FROM datos_rre_2024 WHERE fecha_hora_transaccion >= '2024-01-01 00:00:00' AND fecha_hora_transaccion <= '2024-11-30 23:59:59' AND tipo_transaccion = '0' AND location_id IN ('101800','201A00') AND tipo_transaccion IS NOT NULL ")
 tup1 = tu1.fetchall()
 
 tu2 = connection.cursor()
-tu2.execute("SELECT DISTINCT numero_serie_hex FROM datos_rre_2024 WHERE fecha_hora_transaccion >= '2024-07-01 00:00:00' AND fecha_hora_transaccion <= '2024-10-31 23:59:59' AND tipo_transaccion = '0' AND location_id IN ('101801') AND tipo_transaccion IS NOT NULL")
+tu2.execute("SELECT DISTINCT numero_serie_hex FROM datos_rre_2024 WHERE fecha_hora_transaccion >= '2024-07-01 00:00:00' AND fecha_hora_transaccion <= '2024-11-30 23:59:59' AND tipo_transaccion = '0' AND location_id IN ('101801') AND tipo_transaccion IS NOT NULL")
 tup2 = tu2.fetchall()
 ##
 connection.close()

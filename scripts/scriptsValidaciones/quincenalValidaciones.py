@@ -5,18 +5,18 @@ import json
 #                           Carga de archivos                                 #
 ###############################################################################
 ## Definimos el mes con nombre
-mes = "Octubre"
+mes = "Noviembre"
 ## Definimos el mes con número
-m = "10"
+m = "11"
 ## Definimos el año
 y = "2024"
 folder_p = 'quincenas'
 # folder_p = 'quincenas'
 # periodo = '40'
-periodo = '1ra qna'
-# periodo = '2da qna'
+# periodo = '1ra qna'
+periodo = '2da qna'
 ## Nombres de archivos
-name_file = "1ra_qna_Octubre_2024"
+name_file = "2da_qna_Noviembre_2024_v2"
 file = f'{name_file}.csv'
 json_int = "integradores.json"
 json_tot = "transacciones.json"

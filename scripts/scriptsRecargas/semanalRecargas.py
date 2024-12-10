@@ -1,23 +1,25 @@
 import os
+import matplotlib
 import pandas as pd
 import psycopg2
 import json
 import matplotlib.pyplot as plt
 import numpy as np
+
 ###############################################################################
 #                           Parametros de Analisis                            #
 ###############################################################################
 ## Primer fecha compuesta de la consulta 
 yi = '2024'
-mi = '11'
-di = '25'
+mi = '12'
+di = '02'
 ## Segunda fecha compuesta de la consulta
 yf = '2024'
 mf = '12'
-df = '01'
+df = '08'
 ## Datos Extra
 mes = 'Diciembre'
-sem = '48'
+sem = '49'
 ##
 app = '101801'
 dig = '101800'
@@ -27,13 +29,14 @@ com = '201A00'
 #                           Carga de archivos                                 #
 ###############################################################################
 ## Obtener la ruta del directorio actual
-
+matplotlib.get_cachedir()
+# print(matplotlib.get_cachedir()) 
 ruta_actual = os.getcwd()
-print(ruta_actual)
+# print(ruta_actual)
 ## Subir un nivel en el directorio
 ruta_superior = os.path.dirname(ruta_actual)
 # ruta_sup_2 = os.path.dirname(ruta_superior)
-print(ruta_superior)
+# print(ruta_superior)
 ruta_cats = os.path.join(ruta_actual,'data')
 # print(ruta_sup_2)
 def path_verify(path):
@@ -47,8 +50,8 @@ def path_verify(path):
 ruta_dumps = os.path.join( ruta_actual,f'public/recargas/semanas/{yi}/{sem}')
 ruta_dumps_mac = os.path.join(ruta_actual,f'public/recargas/semanas/{yi}/{sem}/MAC' )
 ## 
-print(ruta_dumps)
-print(ruta_dumps_mac)
+# print(ruta_dumps)
+# print(ruta_dumps_mac)
 path_verify(ruta_dumps)
 path_verify(ruta_dumps_mac)
 
@@ -163,12 +166,18 @@ def resumen_transacciones(df,fechas_unicas):
 def grafico(dias,mt,tr,title,name,periodo,colorb,colorl,colort):
   ## Declaracion del Grafico
   plt.style.use('seaborn-v0_8-paper')
+  
   ## Definimos el objeto grafico (ancho,alto)
   fig,ax = plt.subplots(figsize=(18,8))
+  plt.rcParams['font.family'] = 'Roboto'
+  plt.rcParams['font.size'] =  14
+  # plt.rcParams['figure.facecolor'] = '#fefbea'
+  print(plt.rcParams)
   ## Definimos el Area que ocupara el grafico
   plt.subplots_adjust(left=0.05, right=0.94, bottom=0.148, top=0.94)
   ## Valores base p
   ax2 = ax.twinx()
+  
   p = ax.bar(dias,tr,label='Transacciones',color=f'#{colorb}')
   for i in enumerate(tr):
     ax.bar_label(p, label_type='center', color='#fff',fontsize=11,**{'fmt': '{:,.0f}'})
@@ -176,7 +185,10 @@ def grafico(dias,mt,tr,title,name,periodo,colorb,colorl,colort):
     ax2.annotate(f'${m:,.0f}', (dias[i], m), xytext=(-20,10), textcoords='offset points', fontsize=12, fontweight=600,color=f'#{colort}')  
   ax2.plot(dias,mt,label='Montos',color=f'#{colorl}', marker='o',linestyle='solid')
   ## Creamos una legenda fuera del grafico
-  fig.legend(loc='lower center', ncols=2, fontsize=12)
+  fig.legend(loc='lower center', ncols=2, fontsize=12,facecolor='#fefbea')
+  fig.set_facecolor('#fefbea')
+  ax.set_facecolor('#fefbea')
+  ax2.set_facecolor('#fefbea')
   # Ajusta el formato de los valores en el eje Y
   ax.yaxis.set_major_formatter(lambda x, pos: f'{x:,.0f}')
   ax2.yaxis.set_label_position("right")
@@ -185,12 +197,14 @@ def grafico(dias,mt,tr,title,name,periodo,colorb,colorl,colort):
   ax.tick_params(axis='x', labelsize=10)
   ax.tick_params(axis='y', labelsize=10)
   ax2.tick_params(axis='y', labelsize=10)
-  ax.set_title(title,fontsize=14,fontweight=600)
-  ax.set_xlabel(periodo,fontsize=12,fontweight=600)
-  ax.set_ylabel('Transacciones',fontsize=12,fontweight=600)
-  ax2.set_ylabel('Montos',fontsize=12,fontweight=600)
+  ax.set_title(title,fontsize=14,fontweight=600,color='#99284a')
+  ax.set_xlabel(periodo,fontsize=12,fontweight=600 ,color='#99284a')
+  ax.set_ylabel('Transacciones',fontsize=12,fontweight=600,color='#99284a')
+  ax2.set_ylabel('Montos',fontsize=12,fontweight=600,color='#99284a')
   ####################### Guarda el gráfico en alta resolución
   ruta_grafico = os.path.join(ruta_dumps, name)
+  # plt.rcParams['font.family'] = 'Roboto'
+  # print(plt.rcParams['font.family'][0])
   plt.savefig(ruta_grafico,format='png',dpi=980,bbox_inches='tight')
 ## 
 def grafico_rre(df,title,name,periodo):
@@ -205,8 +219,12 @@ def grafico_rre(df,title,name,periodo):
     
     ## Definir el estilo del grafico
   plt.style.use('seaborn-v0_8-paper')
+  plt.rcParams['font.family'] = 'Roboto'
+  plt.rcParams['font.size'] = 14
+  plt.rcParams['figure.facecolor'] = '#fefbea'
+  # print(plt.rcParams)
     ## Definimos el objeto grafico (ancho,alto)
-  fig,ax = plt.subplots(figsize=(18,8))
+  fig,ax = plt.subplots(figsize=(18,8), facecolor='#fefbea')
   plt.subplots_adjust(left=0.05, right=0.926, bottom=0.148, top=0.94)
     ## Valores base para las barras apiladas
     ## Colores para las barras
@@ -234,10 +252,10 @@ def grafico_rre(df,title,name,periodo):
   }
   for attribute, measurement in tipos.items():
       offset = width * multiplier
-      color = colors.get(attribute)  # Get color from dictionary
+      color = colors.get(attribute) 
       lcolor = lColors.get(attribute)  
       rects = ax.bar(x + offset, measurement, width, label=attribute, color=color)
-      ax.bar_label(rects,label_type='center',padding=2,color=lcolor,fontweight=600,fontsize=9, labels=[f'${value:,.0f}' for value in measurement])
+      ax.bar_label(rects,label_type='center',padding=2,color=lcolor,fontweight=600,  fontsize=9, labels=[f'${value:,.0f}' for value in measurement])
       multiplier += 1
   ax2 = ax.twinx()
       
@@ -254,7 +272,10 @@ def grafico_rre(df,title,name,periodo):
   ax2.plot(dias,comercios_tr,label='Transacciones Comercios',color='#66246b', marker='o',linestyle='solid')
   
     ## Creamos una legenda fuera del grafico
-  fig.legend(loc='lower center', ncols=6, fontsize=12)
+  fig.legend(loc='lower center', ncols=6, fontsize=12,facecolor='#fefbea')
+  fig.set_facecolor('#fefbea')
+  ax.set_facecolor('#fefbea')
+  ax2.set_facecolor('#fefbea')
     # Ajusta el formato de los valores en el eje Y
   ax2.yaxis.set_label_position("right")
   ax.yaxis.set_major_formatter(lambda x, pos: f'${x:,.0f}')
@@ -263,10 +284,10 @@ def grafico_rre(df,title,name,periodo):
   ax.tick_params(axis='x', labelsize=10)
   ax.tick_params(axis='y', labelsize=10)
   ax2.tick_params(axis='y', labelsize=10)
-  ax.set_title(title,fontsize=14,fontweight=600)
-  ax.set_xlabel(periodo,fontsize=12,fontweight=600)
-  ax.set_ylabel('Transacciones',fontsize=12,fontweight=600)
-  ax2.set_ylabel('Montos',fontsize=12,fontweight=600)
+  ax.set_title(title,fontsize=14,fontweight=600,color='#99284a')
+  ax.set_xlabel(periodo,fontsize=12,fontweight=600,color='#99284a')
+  ax.set_ylabel('Transacciones',fontsize=12,fontweight=600,color='#99284a')
+  ax2.set_ylabel('Montos',fontsize=12,fontweight=600,color='#99284a')
     # Guarda el gráfico en alta resolución
   ruta_grafico = os.path.join(ruta_dumps, name)
   plt.savefig(ruta_grafico,format='png',dpi=980,bbox_inches='tight')

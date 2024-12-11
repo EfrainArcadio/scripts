@@ -3,15 +3,15 @@ import os
 import numpy as np
 #### Variables
 ## fechas
-y = '2023'
-m = '12'
-mes = 'Diciembre'
+y = '2024'
+m = '09'
+mes = 'Septiembre'
 ## periodo
 # qna = '1ra'
 qna = '2da'
 ## archivos
-name_file_v1 = 'ORT_Validaciones_2da_qna_diciembre_2023_gral'
-name_file_v2 = '2da_qna_Diciembre_2023_v2'
+name_file_v1 = '2da_qna_Septiembre_2024'
+name_file_v2 = '2da_v2_qna_Septiembre_2024_v2'
 ######### Funciones #####     
 def path_verify(path):
   if not os.path.exists(path):

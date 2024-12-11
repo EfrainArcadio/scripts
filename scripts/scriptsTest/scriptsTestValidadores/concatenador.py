@@ -4,11 +4,11 @@ import glob
 import json
 ## Directorio donde se encuentran los archivos CSV y la cual sera la base de trabajo del Script
 y = '2024'
-mes= 'Noviembre'
-m = '11'
+mes= 'Septiembre'
+m = '09'
 ##  
-c = '2da'
-# c = '1ra_v2'
+c = '2da_v2'
+# c = '1ra'
 ##
 ## File Names
 periodo = f'{c}_qna'
@@ -25,7 +25,7 @@ ruta_test_data = f'/data'
 ruta_datainfo = f'respaldos/Python Scripts/Validadores/data/{y}/{m} {mes}/{c}'
 
 ruta_datadump = f'dataFiles/validaciones/{y}/{m} {mes}'
-# ruta_datainfo = f'dataFiles/validaciones/{y}/semanas/46/Mpeso'
+
 
 ruta_test_json = os.path.join(ruta_actual,'data')
 ruta_info = os.path.join(parent_dir,ruta_datainfo)
@@ -48,11 +48,7 @@ for archivo in archivos:
     df = df.rename(columns={'ï»¿ID_TRANSACCION_ORGANISMO': 'ID_TRANSACCION_ORGANISMO'})
     dfs.append(df)
 df = pd.concat(dfs)
-# print(df)
-# df = pd.concat((pd.read_csv(archivo, encoding='latin-1',low_memory=False) for archivo in archivos), ignore_index=True)
 
-
-# df = df.astype(dtypes)
 df['LOCATION_ID'] = df['LOCATION_ID'].astype(str).str.zfill(width=1)
 
 df.to_csv(path_dump_file, index=False)

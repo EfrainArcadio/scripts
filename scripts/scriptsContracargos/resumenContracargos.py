@@ -3,9 +3,9 @@ import pandas as pd
 import os
 from fuzzywuzzy import fuzz
 ## localizacion de archivos
-sem = '46'
+sem = '48'
 y = '2024'
-file = 'sem_46_11-17_nov'
+file = 'sem_48_25_nov-01_dic'
 ## archivos json correos baneados
 file_bans_v1 = 'banned_mails_v1.json'
 file_bans_v2 = 'banned_mails_v2.json'
@@ -21,6 +21,8 @@ fecha_limit_1 = '13-08-2024 23:59:59'
 fecha_limit_1 = pd.to_datetime(fecha_limit_1, format='%d-%m-%Y %H:%M:%S')
 fecha_limit_2 = '18-09-2024 23:59:59'
 fecha_limit_2 = pd.to_datetime(fecha_limit_2, format='%d-%m-%Y %H:%M:%S')
+fecha_limit_3 = '03-10-2024 23:59:59'
+fecha_limit_3 = pd.to_datetime(fecha_limit_3, format='%d-%m-%Y %H:%M:%S')
 ## Utilidades
 won = 'Ganados: '
 lost = 'Perdidos: '
@@ -201,6 +203,8 @@ re1 = []
 search_date(df,fechas,fecha_limit_1,re1)
 re2 = []
 search_date(df,fechas,fecha_limit_2,re2)
+re3 = []
+search_date(df,fechas,fecha_limit_3,re3)
 print('Buscando correos sospechosos en nuevas operaciones...')
 ##
 df_news_1 = pd.concat(re1)
@@ -214,6 +218,10 @@ if len(re2) > 0:
   df_news_2 = pd.concat(re2)
   df_news_2['sospechoso'] = df_news_2.apply(es_sospechoso, axis=1, args=(data_bans_2,))
   sospechosos2 = df_news_2[df_news_2['sospechoso'] == True]
+if len(re3) > 0:
+  df_news_3= pd.concat(re3)
+  df_news_3['sospechoso'] = df_news_3.apply(es_sospechoso, axis=1, args=(data_bans_3,))
+  sospechosos3 = df_news_3[df_news_3['sospechoso'] == True]
 
 # print(sospechosos)
 print('Creando resumen General...')
@@ -267,9 +275,11 @@ with pd.ExcelWriter(dump_file) as writer:
   df_dpe_ord.to_excel(writer, index=False ,sheet_name=f'Resumen documentation_pending')
   df_to_ban.to_excel(writer,index=False,sheet_name='Reincidentes')
   if len(sospechosos1) > 0:
-    sospechosos1.to_excel(writer,index=False,sheet_name='Baneos 60')
+    sospechosos1.to_excel(writer,index=False,sheet_name='Sospechosos 60')
   if len(sospechosos2) > 0:
-      sospechosos2.to_excel(writer,index=False,sheet_name='Sospechosos 397')
+    sospechosos2.to_excel(writer,index=False,sheet_name='Sospechosos 397')
+  if len(sospechosos3) > 0:
+    sospechosos3.to_excel(writer,index=False,sheet_name='Sospechosos 76')
 
 ##
 df_won = df[df['status'] == 'reimbursed']

@@ -5,9 +5,9 @@ import json
 from openpyxl import Workbook
 ## Primer fecha compuesta de la consulta 
 y= "2024"
-mes = "Septiembre"
-m = "09"
-dia_in = "1"
+mes = "Noviembre"
+m = "11"
+dia_in = "1"  
 dia_fn= "30"
 ###
 app = '101801'
@@ -200,8 +200,10 @@ with pd.ExcelWriter(ruta_sams) as writer:
 #######
 print("Creando Archivo Penalizaciones...")
 ## Analisis para las penalizaciones de las transacciones mayores a 7 seg
-# df_extenciones['duration'] = df_extenciones['duration']
-df_7 = df_extenciones[df_extenciones['duration'] > 7].copy()
+df_extenciones['duration'].fillna(0, inplace=True)
+df_extenciones['duration'] = df_extenciones['duration'].astype('int64')
+# df_extenciones['duration'] = df_extenciones['duration'].str.rstrip('.0')
+df_7 = df_extenciones[df_extenciones['duration'] > 7]
 tr_may_7s = len(df_7)
 print('Transacciones > 7S',tr_may_7s)
 
@@ -231,10 +233,10 @@ pr_total = pr_dig + pr_fis + pr_app
 ## Tabla de valores porcentuales para la comision de mercado pago
 ## Recargas Digitales
 ## Porcentaje mensual de comision digital
-pr_dg1 = 2.2
-pr_dg2 = 2.1
-pr_dg3 = 2
-pr_dg4 = 1.9
+pr_dg1 = 1.9
+pr_dg2 = 1.75
+pr_dg3 = 1.67
+pr_dg4 = 1.6
 
 ## Recargas Fisicas (Negocios)
 ## Porcentaje mensual de comision fisica
@@ -244,10 +246,15 @@ pr_fs3 = 1.8
 pr_fs4 = 1.7
 ## Limites de Rango, esta es la tabla que se ecnuentra en el presente contrato de Mercado Pago
 ## Los mismos rangos se utilizan para recargas fisicas y digitales 
-r1 = 15000000
-r2 = 30000000
-r3 = 45000000
-r4 = 60000000
+rd1 = 60000000
+rd2 = 90000000
+rd3 = 120000000
+rd4 = 1000000000
+##
+rc1 = 15000000
+rc2 = 30000000
+rc3 = 45000000
+rc4 = 1000000000
 
 ## Obtener totales en $ para fisicas, digitales y el total de la suma de ambas 
 tt_fisico = df_res['Montos Fisicos'].sum()
@@ -258,33 +265,32 @@ print(tt_abs_digital)
 mt_total = tt_fisico + tt_digital + tt_appcdmx
 ## Se realizan las condicionales para ajustar el porcentaje automaticamente segun el total segun sea el caso fisica o digital  
 ## Condicional de porcentaje Digital
-if tt_abs_digital <= r1:
+if tt_abs_digital <= rd1:
   pr_com_dig = pr_dg1
-elif tt_abs_digital <= r2:
+elif tt_abs_digital <= rd2:
   pr_com_dig = pr_dg2
-elif tt_abs_digital <= r3:
+elif tt_abs_digital <= rd3:
   pr_com_dig = pr_dg3
-elif tt_abs_digital <= r4:
+elif tt_abs_digital <= rd4:
   pr_com_dig = pr_dg4
-elif tt_abs_digital >= r4:
-  pr_com_dig = pr_dg4
-  print('desde',r4)
+
+  print('desde',rd4)
     
 ## Condicional de porcentaje Fisico
-if tt_fisico <= r1:
+if tt_fisico <= rc1:
     pr_com_fis = pr_fs1
-elif tt_fisico <= r2:
+elif tt_fisico <= rc2:
     pr_com_fis = pr_fs2
-elif tt_fisico <= r3:
+elif tt_fisico <= rc3:
     pr_com_fis = pr_fs3
-elif tt_fisico <= r4:
+elif tt_fisico <= rc4:
     pr_com_fis = pr_fs4
     
 ## Comisiones Fisicas y Digitales
 com_fisico = (pr_com_fis/100)*tt_fisico
 com_digital = (pr_com_dig/100)*tt_digital
 com_appcdmx = (pr_com_dig/100)*tt_appcdmx
-com_total = com_fisico + com_digital + com_appcdmx
+com_total = com_fisico + com_digital + com_appcdmx  
 prm_digital = tt_digital / mt_total 
 prm_fisico = tt_fisico / mt_total 
 prm_appcdmx = tt_appcdmx / mt_total 

@@ -2,12 +2,12 @@ import os
 import pandas as pd
 ## Primer fecha compuesta de la consulta 
 y= "2024"
-mes = "Noviembre"
-m = "11"
-dia_in = 16
-dia_fn = 31
-# qna = '1ra'
-qna = '2da'
+mes = "Diciembre"
+m = "12"
+dia_in = 1
+dia_fn = 16
+qna = '1ra'
+# qna = '2da'
 a = "-Transacciones.csv"
 ae = "-Transacciones-extension.csv"
 ###############################################################################

@@ -5,21 +5,22 @@ import psycopg2
 import json
 import matplotlib.pyplot as plt
 import numpy as np
-
+import matplotlib.font_manager as fm
+fm.FontManager(True)
 ###############################################################################
 #                           Parametros de Analisis                            #
 ###############################################################################
 ## Primer fecha compuesta de la consulta 
 yi = '2024'
 mi = '12'
-di = '02'
+di = '09'
 ## Segunda fecha compuesta de la consulta
 yf = '2024'
 mf = '12'
-df = '08'
+df = '15'
 ## Datos Extra
 mes = 'Diciembre'
-sem = '49'
+sem = '50'
 ##
 app = '101801'
 dig = '101800'
@@ -172,7 +173,7 @@ def grafico(dias,mt,tr,title,name,periodo,colorb,colorl,colort):
   plt.rcParams['font.family'] = 'Roboto'
   plt.rcParams['font.size'] =  14
   # plt.rcParams['figure.facecolor'] = '#fefbea'
-  print(plt.rcParams)
+  # print(plt.rcParams)
   ## Definimos el Area que ocupara el grafico
   plt.subplots_adjust(left=0.05, right=0.94, bottom=0.148, top=0.94)
   ## Valores base p
@@ -328,7 +329,8 @@ def resSmartpos(df,fechas_unicas):
 df_ori = pd.DataFrame(newDatos)
 df_ext = pd.DataFrame(newExtenciones) 
 ##
-df_suc = df_ori[df_ori['tipo_transaccion'] == '0'].copy()
+tr_valids = ['0','9']
+df_suc = df_ori[df_ori['tipo_transaccion'].isin(tr_valids)].copy()
 df_suc_m = df_ori[df_ori['tipo_transaccion'] == '0'].copy()
 df_suc_m['fecha_hora_transaccion'] = df_suc_m['fecha_hora_transaccion'].dt.strftime('%Y-%m-%d')
 fechas_unicas = sorted(set(df_suc_m['fecha_hora_transaccion']))

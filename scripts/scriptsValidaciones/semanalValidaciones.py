@@ -5,17 +5,17 @@ import json
 #                           Carga de archivos                                 #
 ###############################################################################
 ## Definimos el mes con nombre
-mes = "Noviembre"
+mes = "Diciembre"
 ## Definimos el mes con número
-m = "11"
+m = "12"
 ## Definimos el año
 y = "2024"
 folder_p = 'semanas'
 # folder_p = 'quincenas'
-periodo = '47'
+periodo = '50'
 
 ## Nombres de archivos
-name_file = "Validaciones semana 47 2024"
+name_file = "Validaciones semana 50"
 file = f'{name_file}.csv'
 json_int = "integradores.json"
 json_tot = "transacciones.json"
